@@ -1,0 +1,8 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://dcfctha68t0rw"]
+
+[resource]
+resource_name = "Shirt"
+cull_mode = 2
+albedo_color = Color(0.220597, 0.41167, 0.906332, 1)
+metallic_specular = 0.0
+roughness = 0.0

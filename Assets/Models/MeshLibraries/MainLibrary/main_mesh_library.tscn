@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://bqbvhscf7tbhs"]
+
+[ext_resource type="PackedScene" uid="uid://begymeqpejb2t" path="res://Assets/Models/Environment/0_0.glb" id="1_eorvo"]
+
+[node name="MainMeshLibrary" type="Node3D"]
+
+[node name="0_0" parent="." instance=ExtResource("1_eorvo")]

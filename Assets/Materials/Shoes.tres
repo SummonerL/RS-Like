@@ -1,0 +1,8 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://crgn7neiwmpbt"]
+
+[resource]
+resource_name = "Shoes"
+cull_mode = 2
+albedo_color = Color(0.205356, 0.218863, 0.0789929, 1)
+metallic_specular = 0.0
+roughness = 0.5
