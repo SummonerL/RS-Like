@@ -5,4 +5,4 @@
 """
 extends Node3D
 
-var cameraSpeed: float = 0.5
+var camera_speed: float = 0.8

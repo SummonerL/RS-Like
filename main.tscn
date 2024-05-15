@@ -44,12 +44,19 @@ data = {
 "cells": PackedInt32Array(0, 0, 0)
 }
 
-[node name="MalePlayer" parent="." instance=ExtResource("2_qot4a")]
-transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 3.78846, -0.254705, 6.98907)
+[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
+offset_right = 748.0
+offset_bottom = 714.0
+scale = Vector2(1.06889, 0.840721)
 
-[node name="Spatial" type="Node3D" parent="MalePlayer"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.03336, 0)
+[node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
+
+[node name="MalePlayer" parent="SubViewportContainer/SubViewport" instance=ExtResource("2_qot4a")]
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 22.7081, -1.0406, 12.1074)
+
+[node name="Spatial" type="Node3D" parent="SubViewportContainer/SubViewport/MalePlayer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
 script = ExtResource("3_fxx4k")
 
-[node name="PlayerCamera" type="Camera3D" parent="MalePlayer/Spatial"]
-transform = Transform3D(0.707107, -0.353553, 0.612372, 0, 0.866025, 0.5, -0.707107, -0.353553, 0.612372, 5.18446, 3.41274, 5.22928)
+[node name="PlayerCamera" type="Camera3D" parent="SubViewportContainer/SubViewport/MalePlayer/Spatial"]
+transform = Transform3D(-0.666667, 0, 5.82819e-08, 0, 0.666667, 0, -5.82819e-08, 0, -0.666667, 0, 0, -12)
