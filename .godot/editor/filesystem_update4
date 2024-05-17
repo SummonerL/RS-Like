@@ -5,5 +5,4 @@ res://Assets/Materials/Skin.tres
 res://Assets/Materials/Shirt.tres
 res://Assets/Materials/Pants.tres
 res://Assets/Materials/Shoes.tres
-res://Assets/Scripts/GameSettings.gd
-res://Assets/Scripts/CameraSpatial.gd
+res://WorldGrid.gd
