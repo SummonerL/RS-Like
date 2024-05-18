@@ -1,9 +1,11 @@
+Node3D
+CollisionShape3D
+StaticBody3D
 Timer
 Node
 SubViewportContainer
 Container
 SubViewport
 Node2D
-Node3D
 GridMap
 Camera3D

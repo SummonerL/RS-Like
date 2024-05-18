@@ -1,7 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://bqbvhscf7tbhs"]
+[gd_scene load_steps=2 format=3 uid="uid://bfb607xdieouo"]
 
-[ext_resource type="PackedScene" uid="uid://begymeqpejb2t" path="res://Assets/Models/Environment/0_0.glb" id="1_eorvo"]
+[ext_resource type="PackedScene" uid="uid://3jpra031j77o" path="res://Assets/Models/Environment/0_0_sand.tscn" id="2_ei4q0"]
 
-[node name="MainMeshLibrary" type="Node3D"]
+[node name="Library" type="Node3D"]
 
-[node name="0_0" parent="." instance=ExtResource("1_eorvo")]
+[node name="0_0" parent="." instance=ExtResource("2_ei4q0")]

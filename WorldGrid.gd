@@ -7,8 +7,7 @@ extends GridMap
 
 func _ready():
 	var used_source_cells = get_used_cells() # does not consider the mesh size
-	print(used_source_cells)
-	
+
 	# debugging 
 	show_grid(used_source_cells)
 	
@@ -84,9 +83,3 @@ func draw_cell_box(cell, wireframe_material):
 
 	# Add the square to the scene
 	add_child(square_instance)
-
-func to_map(world_position):
-	# Convert world coordinates to GridMap cell coordinates
-	print(world_position)
-	var temp = Vector3(world_position.x, world_position.y, 0)
-	return local_to_map(temp)

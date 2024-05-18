@@ -1,9 +1,12 @@
-[gd_scene load_steps=8 format=3 uid="uid://kovhsisnb8w3"]
+[gd_scene load_steps=11 format=3 uid="uid://kovhsisnb8w3"]
 
-[ext_resource type="MeshLibrary" uid="uid://b4jsfeo5vt2y8" path="res://Assets/Models/MeshLibraries/MainLibrary/main_mesh_library.tres" id="1_4wcq0"]
+[ext_resource type="MeshLibrary" uid="uid://bvexiqcy8f8gi" path="res://Assets/Models/MeshLibraries/MainLibrary/main_mesh_library.tres" id="1_4wcq0"]
 [ext_resource type="Script" path="res://WorldGrid.gd" id="2_mldik"]
 [ext_resource type="PackedScene" uid="uid://ctninp2tp6gva" path="res://Assets/Models/Characters/male_player.glb" id="2_qot4a"]
 [ext_resource type="Script" path="res://Assets/Scripts/CameraSpatial.gd" id="3_fxx4k"]
+[ext_resource type="Script" path="res://Assets/Models/Characters/PlayerController.gd" id="4_rmypb"]
+[ext_resource type="Script" path="res://Refs.gd" id="6_gwo08"]
+[ext_resource type="PackedScene" uid="uid://8bd23kevskwy" path="res://Assets/Models/Objects/Interface/click_flag.glb" id="7_7s4ew"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ybwbj"]
 sky_top_color = Color(0, 0, 0, 1)
@@ -55,13 +58,22 @@ data = {
 }
 script = ExtResource("2_mldik")
 
-[node name="MalePlayer" parent="GameViewportContainer/GameViewport" instance=ExtResource("2_qot4a")]
-transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 22.7081, -1.0406, 12.1074)
+[node name="MalePlayer" parent="GameViewportContainer/GameViewport" node_paths=PackedStringArray("__") instance=ExtResource("2_qot4a")]
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 22.7081, -0.233843, 12.1074)
+script = ExtResource("4_rmypb")
+__ = NodePath("../Refs")
 
-[node name="Spatial" type="Node3D" parent="GameViewportContainer/GameViewport/MalePlayer" node_paths=PackedStringArray("world_grid")]
+[node name="Spatial" type="Node3D" parent="GameViewportContainer/GameViewport/MalePlayer"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
 script = ExtResource("3_fxx4k")
-world_grid = NodePath("../../WorldGrid")
 
 [node name="PlayerCamera" type="Camera3D" parent="GameViewportContainer/GameViewport/MalePlayer/Spatial"]
 transform = Transform3D(-0.666667, 0, 5.82819e-08, 0, 0.666667, 0, -5.82819e-08, 0, -0.666667, 0, 0, -12)
+
+[node name="Refs" type="Node3D" parent="GameViewportContainer/GameViewport" node_paths=PackedStringArray("world_grid", "camera", "click_flag")]
+script = ExtResource("6_gwo08")
+world_grid = NodePath("../WorldGrid")
+camera = NodePath("../MalePlayer/Spatial/PlayerCamera")
+click_flag = NodePath("../../../click_flag")
+
+[node name="click_flag" parent="." instance=ExtResource("7_7s4ew")]

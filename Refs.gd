@@ -1,0 +1,12 @@
+"""
+	Script: CameraSpatial.gd
+	Description: This script is attached to an empty 'Ref' node. The purpose of this is to act as
+	a reference to commonly accessed nodes (e.g grid, camera), to keep exports clean and 
+	straightforward.
+"""
+extends Node3D
+
+# Reference to the world grid
+@export var world_grid: GridMap
+@export var camera: Camera3D
+@export var click_flag: Node3D
