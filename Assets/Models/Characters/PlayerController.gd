@@ -38,7 +38,7 @@ func generic_action_request(target_position):
 		__.click_flag.position.y = position.y
 		
 		var grid_x = int(intersection_point.x / __.world_grid.cell_size.x)
-		var grid_y = 0 #int(intersection_point.y / __.world_grid.cell_size.y)
+		var grid_y = int(intersection_point.y / __.world_grid.cell_size.y)
 		var grid_z = int(intersection_point.z / __.world_grid.cell_size.z)
 		generic_request = Vector3(grid_x, grid_y, grid_z)
 	
