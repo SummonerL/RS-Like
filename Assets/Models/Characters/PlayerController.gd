@@ -9,9 +9,14 @@ var movement_path = [] # Vector2
 # Reference to the world grid
 @export var __: Node3D
 
+# Clean this up. We want to attach the MeshInstance3D
+var mesh: MeshInstance3D
+
 func _ready():
 	# Connect to the tick signal
 	GameManager.connect("tick", _on_tick)
+	
+	mesh = get_node("/root/Main/GameViewportContainer/GameViewport/MalePlayer/Cube")
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
@@ -60,18 +65,30 @@ func move_to_cell(grid_cell):
 	
 func move_coroutine(target):
 	return func() -> void:
-		# Temp code
-		var mesh: MeshInstance3D = get_node("/root/Main/GameViewportContainer/GameViewport/MalePlayer/Cube")
-		mesh.look_at(Vector3(target.x, mesh.global_transform.origin.y, target.z), Vector3.UP, true)
-		# =========
-		
 		var elapsed_time = 0.0
 		var start_position = global_transform.origin
+		var start_rotation = mesh.rotation
+		var direction = (target - start_position).normalized()
+		var target_rotation = Basis.looking_at(direction, Vector3.UP, true).get_euler()
+
 		while elapsed_time < GameManager.TICK_INTERVAL:
 			elapsed_time += get_process_delta_time()
 			var t = elapsed_time / GameManager.TICK_INTERVAL
+
+		   # Smoothly interpolate the rotation
+			var current_rotation = Vector3(
+				start_rotation.x,
+				rotate_toward(start_rotation.y, target_rotation.y, t * GameManager.ROTATE_SPEED),
+				start_rotation.z
+			)
+			if (global_transform.origin != target):
+				mesh.rotation = current_rotation
+			
+			# Smoothly lerp the character to the target cell
 			global_transform.origin = lerp(start_position, Vector3(target.x, 0, target.z), t)
+			
 			await get_tree().create_timer(0.01).timeout
+		
 		global_transform.origin = target
 	
 # triggered every game 'tick'

@@ -54,7 +54,7 @@ cell_center_x = false
 cell_center_y = false
 cell_center_z = false
 data = {
-"cells": PackedInt32Array(0, 0, 1, 0, 20, 0)
+"cells": PackedInt32Array(0, 0, 1)
 }
 script = ExtResource("2_mldik")
 

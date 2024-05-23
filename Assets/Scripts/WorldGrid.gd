@@ -19,7 +19,7 @@ func _ready():
 	used_grid_cells_2d = used_grid_cells.map(func(cell): return Vector2(cell.x, cell.z))
 
 	# debugging 
-	show_grid()
+	# show_grid()
 	
 # used for debugging
 func show_grid():
@@ -125,6 +125,7 @@ func find_path(start_cell, end_cell):
 				path.append(current.pos)
 				current = current.parent
 			path.reverse()
+			path.pop_front() # We don't need the origin node
 			return path
 		
 		# Determine Evaluate children (orthogonal and diagonal cells)

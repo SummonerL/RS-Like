@@ -5,14 +5,7 @@ res://Assets/Materials/Skin.tres
 res://Assets/Materials/Shirt.tres
 res://Assets/Materials/Pants.tres
 res://Assets/Materials/Shoes.tres
-res://WorldGrid.gd
-res://Assets/Models/MeshLibraries/MainLibrary/main_mesh_library.tscn
-res://Assets/Models/MeshLibraries/MainLibrary/main_mesh_library_test.tres
-res://Assets/Models/Environment/base_plane.tscn
-res://Assets/Models/Environment/0_0_sand.tscn
-res://Assets/Materials/Shaders/terrain_test.gdshader
-res://Assets/Scripts/CameraSpatial.gd
 res://Assets/Models/Characters/PlayerController.gd
-res://Refs.gd
+res://Assets/Models/Environment/0_0_sand.tscn
 res://Assets/Scripts/WorldGrid.gd
 res://Assets/Scripts/GameManager.gd
