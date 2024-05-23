@@ -37,13 +37,11 @@ func generic_action_request(target_position):
 		__.click_flag.position = intersection_point
 		__.click_flag.position.y = position.y
 		
-		var grid_x = int(intersection_point.x / __.world_grid.cell_size.x)
-		var grid_y = int(intersection_point.y / __.world_grid.cell_size.y)
-		var grid_z = int(intersection_point.z / __.world_grid.cell_size.z)
-		generic_request = Vector3(grid_x, grid_y, grid_z)
+		# convert intersection point to GridMap coordinate
+		generic_request = __.world_grid.local_to_map(intersection_point)
 	
 func process_generic_request():
-	print(generic_request)
+	# convert back to world coordinates to position player
 	var target = __.world_grid.map_to_local(generic_request)
 	target.x += (.5 * __.world_grid.cell_size.x)
 	target.z += (.5 * __.world_grid.cell_size.z)
