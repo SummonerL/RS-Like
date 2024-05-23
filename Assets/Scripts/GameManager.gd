@@ -1,7 +1,7 @@
 extends Node
 
 # Define the tick interval in seconds (600ms = 0.6 seconds)
-const TICK_INTERVAL = 0.6
+const TICK_INTERVAL = .6
 
 # A signal to notify other parts of the game that a tick has occurred
 signal tick

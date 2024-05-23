@@ -1,0 +1,79 @@
+[gd_scene load_steps=11 format=3 uid="uid://kovhsisnb8w3"]
+
+[ext_resource type="MeshLibrary" uid="uid://bvexiqcy8f8gi" path="res://Assets/Models/MeshLibraries/MainLibrary/main_mesh_library.tres" id="1_4wcq0"]
+[ext_resource type="Script" path="res://Assets/Scripts/WorldGrid.gd" id="2_mldik"]
+[ext_resource type="PackedScene" uid="uid://ctninp2tp6gva" path="res://Assets/Models/Characters/male_player.glb" id="2_qot4a"]
+[ext_resource type="Script" path="res://Assets/Scripts/CameraSpatial.gd" id="3_fxx4k"]
+[ext_resource type="Script" path="res://Assets/Models/Characters/PlayerController.gd" id="4_rmypb"]
+[ext_resource type="Script" path="res://Assets/Scripts/Refs.gd" id="6_gwo08"]
+[ext_resource type="PackedScene" uid="uid://8bd23kevskwy" path="res://Assets/Models/Objects/Interface/click_flag.glb" id="7_7s4ew"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ybwbj"]
+sky_top_color = Color(0, 0, 0, 1)
+sky_horizon_color = Color(0.5, 0.5, 0.5, 1)
+ground_bottom_color = Color(0, 0, 0, 1)
+ground_horizon_color = Color(0.5, 0.5, 0.5, 1)
+
+[sub_resource type="Sky" id="Sky_jj3uj"]
+sky_material = SubResource("ProceduralSkyMaterial_ybwbj")
+radiance_size = 0
+
+[sub_resource type="Environment" id="Environment_ibg2b"]
+background_mode = 2
+background_energy_multiplier = 3.0
+sky = SubResource("Sky_jj3uj")
+sky_custom_fov = 1.0
+ambient_light_energy = 0.0
+reflected_light_source = 1
+
+[node name="Main" type="Node3D"]
+
+[node name="GameViewportContainer" type="SubViewportContainer" parent="."]
+offset_right = 800.0
+offset_bottom = 600.0
+
+[node name="GameViewport" type="SubViewport" parent="GameViewportContainer"]
+handle_input_locally = false
+size = Vector2i(800, 600)
+render_target_update_mode = 4
+
+[node name="MainWorldEnvironment" type="WorldEnvironment" parent="GameViewportContainer/GameViewport"]
+environment = SubResource("Environment_ibg2b")
+
+[node name="MainGlobalLighting" type="DirectionalLight3D" parent="GameViewportContainer/GameViewport"]
+transform = Transform3D(-0.146083, 0.364175, -0.919802, 0, 0.929777, 0.368124, 0.989272, 0.0537767, -0.135825, 0, 0, 0)
+shadow_enabled = true
+directional_shadow_mode = 1
+directional_shadow_fade_start = 0.0
+directional_shadow_max_distance = 1.0
+
+[node name="WorldGrid" type="GridMap" parent="GameViewportContainer/GameViewport"]
+mesh_library = ExtResource("1_4wcq0")
+cell_size = Vector3(5, 1, 5)
+cell_center_x = false
+cell_center_y = false
+cell_center_z = false
+data = {
+"cells": PackedInt32Array(0, 0, 1)
+}
+script = ExtResource("2_mldik")
+
+[node name="MalePlayer" parent="GameViewportContainer/GameViewport" node_paths=PackedStringArray("__") instance=ExtResource("2_qot4a")]
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 22.7081, -0.233843, 12.1074)
+script = ExtResource("4_rmypb")
+__ = NodePath("../Refs")
+
+[node name="Spatial" type="Node3D" parent="GameViewportContainer/GameViewport/MalePlayer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
+script = ExtResource("3_fxx4k")
+
+[node name="PlayerCamera" type="Camera3D" parent="GameViewportContainer/GameViewport/MalePlayer/Spatial"]
+transform = Transform3D(-0.666667, 0, 5.82819e-08, 0, 0.666667, 0, -5.82819e-08, 0, -0.666667, 0, 0, -12)
+
+[node name="Refs" type="Node3D" parent="GameViewportContainer/GameViewport" node_paths=PackedStringArray("world_grid", "camera", "click_flag")]
+script = ExtResource("6_gwo08")
+world_grid = NodePath("../WorldGrid")
+camera = NodePath("../MalePlayer/Spatial/PlayerCamera")
+click_flag = NodePath("../../../click_flag")
+
+[node name="click_flag" parent="." instance=ExtResource("7_7s4ew")]

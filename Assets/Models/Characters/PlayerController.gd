@@ -3,6 +3,9 @@ extends Node3D
 # Variable to store the target position for the generic action request
 var generic_request = null
 
+# Array to store the movement path for the player
+var movement_path = [] # Vector2
+
 # Reference to the world grid
 @export var __: Node3D
 
@@ -33,6 +36,8 @@ func generic_action_request(target_position):
 	
 	if result:
 		var intersection_point = result.position
+		intersection_point.y = 0
+		
 		# temp, try setting the click flag to this position
 		__.click_flag.position = intersection_point
 		__.click_flag.position.y = position.y
@@ -41,11 +46,28 @@ func generic_action_request(target_position):
 		generic_request = __.world_grid.local_to_map(intersection_point)
 	
 func process_generic_request():
-	# convert back to world coordinates to position player
-	var target = __.world_grid.map_to_local(generic_request)
+	# Assuming this is a walk request, determine and populate the walk path
+	var source_cell = __.world_grid.local_to_map(Vector3(position.x, 0, position.z))
+	
+	movement_path = __.world_grid.find_path(Vector2(source_cell.x, source_cell.z), Vector2(generic_request.x, generic_request.z))
+	
+func move_to_cell(grid_cell):
+	var target = __.world_grid.map_to_local(Vector3(grid_cell.x, 0, grid_cell.y))
 	target.x += (.5 * __.world_grid.cell_size.x)
 	target.z += (.5 * __.world_grid.cell_size.z)
-	position = target
+	var move_c = move_coroutine(target)
+	move_c.call()
+	
+func move_coroutine(target):
+	return func() -> void:
+		var elapsed_time = 0.0
+		var start_position = global_transform.origin
+		while elapsed_time < GameManager.TICK_INTERVAL:
+			elapsed_time += get_process_delta_time()
+			var t = elapsed_time / GameManager.TICK_INTERVAL
+			global_transform.origin = lerp(start_position, Vector3(target.x, 0, target.z), t)
+			await get_tree().create_timer(0.01).timeout
+		global_transform.origin = target
 	
 # triggered every game 'tick'
 func _on_tick():
@@ -53,3 +75,7 @@ func _on_tick():
 	if generic_request != null:
 		process_generic_request()
 		generic_request = null
+		
+	if (len(movement_path) > 0):
+		# move to next cell
+		move_to_cell(movement_path.pop_front())
