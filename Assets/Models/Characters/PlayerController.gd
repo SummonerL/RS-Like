@@ -60,6 +60,11 @@ func move_to_cell(grid_cell):
 	
 func move_coroutine(target):
 	return func() -> void:
+		# Temp code
+		var mesh: MeshInstance3D = get_node("/root/Main/GameViewportContainer/GameViewport/MalePlayer/Cube")
+		mesh.look_at(Vector3(target.x, mesh.global_transform.origin.y, target.z), Vector3.UP, true)
+		# =========
+		
 		var elapsed_time = 0.0
 		var start_position = global_transform.origin
 		while elapsed_time < GameManager.TICK_INTERVAL:
