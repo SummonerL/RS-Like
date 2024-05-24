@@ -6,8 +6,11 @@ var generic_request = null
 # Array to store the movement path for the player
 var movement_path = [] # Vector2
 
-# Reference to the world grid
+# Our global Refs
 @export var __: Node3D
+
+# Reference to the terrain RayCast (used for determining terrain height)
+@export var terrain_cast: RayCast3D
 
 # Clean this up. We want to attach the MeshInstance3D
 var mesh: MeshInstance3D
@@ -52,6 +55,7 @@ func generic_action_request(target_position):
 	
 func process_generic_request():
 	# Assuming this is a walk request, determine and populate the walk path
+	# TODO: Determine the request type
 	var source_cell = __.world_grid.local_to_map(Vector3(position.x, 0, position.z))
 	
 	movement_path = __.world_grid.find_path(Vector2(source_cell.x, source_cell.z), Vector2(generic_request.x, generic_request.z))
@@ -70,6 +74,8 @@ func move_coroutine(target):
 		var start_rotation = mesh.rotation
 		var direction = (target - start_position).normalized()
 		var target_rotation = Basis.looking_at(direction, Vector3.UP, true).get_euler()
+		terrain_cast.enabled = true # determine terrain height
+		target.y = 0
 
 		while elapsed_time < GameManager.TICK_INTERVAL:
 			elapsed_time += get_process_delta_time()
@@ -83,13 +89,18 @@ func move_coroutine(target):
 			)
 			if (global_transform.origin != target):
 				mesh.rotation = current_rotation
+				
+			# determine the terrain height to place the player accordingly
+			if (terrain_cast.is_colliding()):
+				target.y = terrain_cast.get_collision_point().y
 			
 			# Smoothly lerp the character to the target cell
-			global_transform.origin = lerp(start_position, Vector3(target.x, 0, target.z), t)
+			global_transform.origin = lerp(start_position, Vector3(target.x, target.y, target.z), t)
 			
 			await get_tree().create_timer(0.01).timeout
 		
 		global_transform.origin = target
+		terrain_cast.enabled = false
 	
 # triggered every game 'tick'
 func _on_tick():

@@ -58,10 +58,11 @@ data = {
 }
 script = ExtResource("2_mldik")
 
-[node name="MalePlayer" parent="GameViewportContainer/GameViewport" node_paths=PackedStringArray("__") instance=ExtResource("2_qot4a")]
+[node name="MalePlayer" parent="GameViewportContainer/GameViewport" node_paths=PackedStringArray("__", "terrain_cast") instance=ExtResource("2_qot4a")]
 transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 22.7081, -0.233843, 12.1074)
 script = ExtResource("4_rmypb")
-__ = NodePath("../Refs")
+__ = NodePath("../../../Refs")
+terrain_cast = NodePath("TerrainRayCast")
 
 [node name="Spatial" type="Node3D" parent="GameViewportContainer/GameViewport/MalePlayer"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
@@ -70,10 +71,16 @@ script = ExtResource("3_fxx4k")
 [node name="PlayerCamera" type="Camera3D" parent="GameViewportContainer/GameViewport/MalePlayer/Spatial"]
 transform = Transform3D(-0.666667, 0, 5.82819e-08, 0, 0.666667, 0, -5.82819e-08, 0, -0.666667, 0, 0, -12)
 
-[node name="Refs" type="Node3D" parent="GameViewportContainer/GameViewport" node_paths=PackedStringArray("world_grid", "camera", "click_flag")]
-script = ExtResource("6_gwo08")
-world_grid = NodePath("../WorldGrid")
-camera = NodePath("../MalePlayer/Spatial/PlayerCamera")
-click_flag = NodePath("../../../click_flag")
+[node name="TerrainRayCast" type="RayCast3D" parent="GameViewportContainer/GameViewport/MalePlayer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6, 0)
+enabled = false
+target_position = Vector3(0, -10, 0)
+debug_shape_thickness = 1
 
 [node name="click_flag" parent="." instance=ExtResource("7_7s4ew")]
+
+[node name="Refs" type="Node3D" parent="." node_paths=PackedStringArray("world_grid", "camera", "click_flag")]
+script = ExtResource("6_gwo08")
+world_grid = NodePath("../GameViewportContainer/GameViewport/WorldGrid")
+camera = NodePath("../GameViewportContainer/GameViewport/MalePlayer/Spatial/PlayerCamera")
+click_flag = NodePath("../click_flag")
