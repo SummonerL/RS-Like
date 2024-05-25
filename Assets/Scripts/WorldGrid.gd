@@ -9,6 +9,9 @@ extends GridMap
 var used_grid_cells = [] # Vector3 Array
 var used_grid_cells_2d = [] # Vector2 Array
 
+@export var grid_terrain_ray: RayCast3D
+var grid_rendered = false
+
 func _ready():
 	var used_source_cells = get_used_cells() # does not consider the mesh size
 
@@ -23,6 +26,7 @@ func _ready():
 	
 # used for debugging
 func show_grid():
+	await get_tree().create_timer(.01).timeout
 	var wireframe_material: StandardMaterial3D = StandardMaterial3D.new()
 	wireframe_material.albedo_color = Color(1, 0, 0, 0.5)  # Red color with some transparency
 
@@ -68,18 +72,32 @@ func draw_cell_box(cell, wireframe_material):
 
 	# Define the vertices of the square
 	var half_size: Vector3 = cell_size * 0.5
+	
 	var vertices := [
-		Vector3(-half_size.x, 0, -half_size.z),
-		Vector3(half_size.x, 0, -half_size.z),
-		Vector3(half_size.x, 0, half_size.z),
-		Vector3(-half_size.x, 0, half_size.z)
+		Vector3(cell_position.x + -half_size.x, 0, cell_position.z + -half_size.z),
+		Vector3(cell_position.x + half_size.x, 0, cell_position.z + -half_size.z),
+		Vector3(cell_position.x + half_size.x, 0, cell_position.z + half_size.z),
+		Vector3(cell_position.x + -half_size.x, 0, cell_position.z + half_size.z)
 	]
-
+	
+	grid_terrain_ray.enabled = true
+	
+	# determine the height of the vertices, based on the terrain	
+	for i in range(vertices.size()):
+		var vertex = vertices[i]
+		grid_terrain_ray.position = Vector3(vertex.x, 10, vertex.z)
+		grid_terrain_ray.force_raycast_update()
+		if (grid_terrain_ray.is_colliding()):
+			vertex.y = grid_terrain_ray.get_collision_point().y
+		vertices[i] = vertex
+		
+	grid_terrain_ray.enabled = false
+		
 	# Draw the square using lines
 	square_mesh.surface_begin(Mesh.PRIMITIVE_LINES, wireframe_material)
 	for i in range(vertices.size()):
-		square_mesh.surface_add_vertex(cell_position + vertices[i])
-		square_mesh.surface_add_vertex(cell_position + vertices[(i + 1) % vertices.size()])
+		square_mesh.surface_add_vertex(vertices[i])
+		square_mesh.surface_add_vertex(vertices[(i + 1) % vertices.size()])
 	square_mesh.surface_end()
 
 	# Create a MeshInstance3D to display the ImmediateMesh
