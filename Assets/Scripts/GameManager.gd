@@ -6,6 +6,9 @@ const TICK_INTERVAL = .6
 # Define the speed in which the character rotates when moving
 const ROTATE_SPEED = 3
 
+# Define the maximum distance the player can click (send a click request, in tiles)
+const MAX_CLICK_DISTANCE = 18
+
 # A signal to notify other parts of the game that a tick has occurred
 signal tick
 

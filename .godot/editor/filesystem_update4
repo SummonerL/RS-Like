@@ -9,3 +9,5 @@ res://Assets/Models/Objects/Interface/ClickFlag.gd
 res://Assets/Models/Characters/PlayerController.gd
 res://Assets/Models/Environment/0_0_sand.tscn
 res://Assets/Models/MeshLibraries/MainLibrary/main_mesh_library.tscn
+res://Assets/Scripts/GameManager.gd
+res://Assets/Scripts/WorldGrid.gd

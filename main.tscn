@@ -77,6 +77,7 @@ script = ExtResource("3_fxx4k")
 
 [node name="PlayerCamera" type="Camera3D" parent="GameViewportContainer/GameViewport/MalePlayer/Spatial"]
 transform = Transform3D(-0.666667, 0, 5.82819e-08, 0, 0.666667, 0, -5.82819e-08, 0, -0.666667, 0, 0, -12)
+far = 90.0
 
 [node name="TerrainRayCast" type="RayCast3D" parent="GameViewportContainer/GameViewport/MalePlayer"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6, 0)
@@ -85,6 +86,7 @@ target_position = Vector3(0, -10, 0)
 debug_shape_thickness = 1
 
 [node name="ClickFlag" parent="." node_paths=PackedStringArray("__", "terrain_cast") instance=ExtResource("7_7s4ew")]
+visible = false
 script = ExtResource("7_cf6lb")
 __ = NodePath("../Refs")
 terrain_cast = NodePath("TerrainRayCast")

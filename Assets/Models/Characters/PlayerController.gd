@@ -46,11 +46,18 @@ func generic_action_request(target_position):
 		var intersection_point = result.position
 		intersection_point.y = 0
 		
-		# temp, try setting the click flag to this position
+		# convert intersection point to GridMap coordinate
+		var target_grid_map_coordinate = __.world_grid.local_to_map(intersection_point)
+		
+		# ensure the target is within the maximum click distance
+		var player_current_tile = __.world_grid.local_to_map(Vector3(position.x, 0, position.z))
+		if (__.world_grid.get_distance(player_current_tile, target_grid_map_coordinate) > GameManager.MAX_CLICK_DISTANCE):
+			return
+		
+		# set the click flag to this position (actual position, not the grid coordinate)
 		__.click_flag.move_flag(intersection_point)
 		
-		# convert intersection point to GridMap coordinate
-		generic_request = __.world_grid.local_to_map(intersection_point)
+		generic_request = target_grid_map_coordinate
 	
 func process_generic_request():
 	# Assuming this is a walk request, determine and populate the walk path

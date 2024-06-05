@@ -107,6 +107,14 @@ func draw_cell_box(cell, wireframe_material):
 	# Add the square to the scene
 	add_child(square_instance)
 	
+# returns the distance (in cells) between two points.
+func get_distance(current_cell, target_cell):
+	var current_2d = Vector2(current_cell.x, current_cell.z)
+	var target_2d = Vector2(target_cell.x, target_cell.z)
+	
+	# chebyshev distance
+	return max(abs(current_2d.x - target_2d.x), abs(current_2d.y - target_2d.y))
+	
 # finds the shortest path, using A*.
 # Cnsiders occupied cells and diagonal movement
 func find_path(start_cell, end_cell):
