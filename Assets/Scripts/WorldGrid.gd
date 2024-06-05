@@ -123,13 +123,11 @@ func find_path(start_cell, end_cell):
 	
 	while len(open_list) > 0:
 		var current_node = open_list[0]
-		var current_index = 0
 		
 		# Finds the lowest cost node in the open list
 		for index in range(len(open_list)):
 			if (open_list[index].f < current_node.f):
 				current_node = open_list[index]
-				current_index = index
 			
 		# We've evaluated the current node. Move it to the closed list
 		open_list.erase(current_node)

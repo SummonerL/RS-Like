@@ -1,11 +1,11 @@
-res://Assets/Models/Environment/0_0_sand.tscn
+res://main.tscn
 res://Assets/Materials/BaseSand.tres
 res://Assets/Models/MeshLibraries/MainLibrary/main_mesh_library.tres
 res://Assets/Materials/Skin.tres
 res://Assets/Materials/Shirt.tres
 res://Assets/Materials/Pants.tres
 res://Assets/Materials/Shoes.tres
-res://main.tscn
-res://Assets/Scripts/WorldGrid.gd
+res://Assets/Models/Objects/Interface/ClickFlag.gd
 res://Assets/Models/Characters/PlayerController.gd
+res://Assets/Models/Environment/0_0_sand.tscn
 res://Assets/Models/MeshLibraries/MainLibrary/main_mesh_library.tscn

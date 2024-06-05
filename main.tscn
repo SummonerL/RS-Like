@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://kovhsisnb8w3"]
+[gd_scene load_steps=12 format=3 uid="uid://kovhsisnb8w3"]
 
 [ext_resource type="MeshLibrary" uid="uid://bvexiqcy8f8gi" path="res://Assets/Models/MeshLibraries/MainLibrary/main_mesh_library.tres" id="1_4wcq0"]
 [ext_resource type="Script" path="res://Assets/Scripts/WorldGrid.gd" id="2_mldik"]
@@ -7,6 +7,7 @@
 [ext_resource type="Script" path="res://Assets/Models/Characters/PlayerController.gd" id="4_rmypb"]
 [ext_resource type="Script" path="res://Assets/Scripts/Refs.gd" id="6_gwo08"]
 [ext_resource type="PackedScene" uid="uid://8bd23kevskwy" path="res://Assets/Models/Objects/Interface/click_flag.glb" id="7_7s4ew"]
+[ext_resource type="Script" path="res://Assets/Models/Objects/Interface/ClickFlag.gd" id="7_cf6lb"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ybwbj"]
 sky_top_color = Color(0, 0, 0, 1)
@@ -83,10 +84,19 @@ enabled = false
 target_position = Vector3(0, -10, 0)
 debug_shape_thickness = 1
 
-[node name="click_flag" parent="." instance=ExtResource("7_7s4ew")]
+[node name="ClickFlag" parent="." node_paths=PackedStringArray("__", "terrain_cast") instance=ExtResource("7_7s4ew")]
+script = ExtResource("7_cf6lb")
+__ = NodePath("../Refs")
+terrain_cast = NodePath("TerrainRayCast")
+
+[node name="TerrainRayCast" type="RayCast3D" parent="ClickFlag"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10, 0)
+enabled = false
+target_position = Vector3(0, -20, 0)
+debug_shape_thickness = 1
 
 [node name="Refs" type="Node3D" parent="." node_paths=PackedStringArray("world_grid", "camera", "click_flag")]
 script = ExtResource("6_gwo08")
 world_grid = NodePath("../GameViewportContainer/GameViewport/WorldGrid")
 camera = NodePath("../GameViewportContainer/GameViewport/MalePlayer/Spatial/PlayerCamera")
-click_flag = NodePath("../click_flag")
+click_flag = NodePath("../ClickFlag")

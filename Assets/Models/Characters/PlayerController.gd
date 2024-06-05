@@ -47,8 +47,7 @@ func generic_action_request(target_position):
 		intersection_point.y = 0
 		
 		# temp, try setting the click flag to this position
-		__.click_flag.position = intersection_point
-		__.click_flag.position.y = position.y
+		__.click_flag.move_flag(intersection_point)
 		
 		# convert intersection point to GridMap coordinate
 		generic_request = __.world_grid.local_to_map(intersection_point)
