@@ -1,8 +1,25 @@
-[gd_scene load_steps=2 format=3 uid="uid://bxsadq5pme1b3"]
+[gd_scene load_steps=5 format=3 uid="uid://bxsadq5pme1b3"]
 
-[ext_resource type="Script" path="res://Assets/Scripts/GameServer.gd" id="1_ve3ib"]
+[ext_resource type="Script" path="res://Assets/Scripts/Server/GameServer.gd" id="1_ve3ib"]
+[ext_resource type="Script" path="res://Assets/Scripts/Server/RequestManager.gd" id="2_stpiy"]
+[ext_resource type="Script" path="res://Assets/Scripts/Common/Refs.gd" id="3_n11lj"]
+[ext_resource type="Script" path="res://Assets/Scripts/Server/PlayerInfo.gd" id="4_7ur6b"]
 
 [node name="Main" type="Node2D"]
 
-[node name="GameServer" type="Node" parent="."]
+[node name="GameServer" type="Node" parent="." node_paths=PackedStringArray("__")]
 script = ExtResource("1_ve3ib")
+__ = NodePath("../Refs")
+
+[node name="RequestManager" type="Node" parent="." node_paths=PackedStringArray("__")]
+script = ExtResource("2_stpiy")
+__ = NodePath("../Refs")
+
+[node name="Refs" type="Node" parent="." node_paths=PackedStringArray("game_server", "request_manager", "player_info")]
+script = ExtResource("3_n11lj")
+game_server = NodePath("../GameServer")
+request_manager = NodePath("../RequestManager")
+player_info = NodePath("../PlayerInfo")
+
+[node name="PlayerInfo" type="Node" parent="."]
+script = ExtResource("4_7ur6b")

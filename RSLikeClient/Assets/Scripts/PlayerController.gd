@@ -19,6 +19,9 @@ func _ready():
 	# Connect to the tick signal
 	GameManager.connect("tick", _on_tick)
 	
+	# Server requests to set (teleport) the player position
+	__.game_server.connect("update_player_position", teleport_to_cell)
+	
 	mesh = get_node("/root/Main/GameViewportContainer/GameViewport/MalePlayer/Cube")
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -57,6 +60,8 @@ func generic_action_request(target_position):
 		# set the click flag to this position (actual position, not the grid coordinate)
 		__.click_flag.move_flag(intersection_point)
 		
+		# submit the request to the server
+		
 		generic_request = target_grid_map_coordinate
 	
 func process_generic_request():
@@ -67,11 +72,12 @@ func process_generic_request():
 	movement_path = __.world_grid.find_path(Vector2(source_cell.x, source_cell.z), Vector2(generic_request.x, generic_request.z))
 	
 func move_to_cell(grid_cell):
-	var target = __.world_grid.map_to_local(Vector3(grid_cell.x, 0, grid_cell.y))
-	target.x += (.5 * __.world_grid.cell_size.x)
-	target.z += (.5 * __.world_grid.cell_size.z)
+	var target = __.world_grid.map_to_local_center(grid_cell)
 	var move_c = move_coroutine(target)
 	move_c.call()
+	
+func teleport_to_cell(grid_cell):
+	global_transform.origin = __.world_grid.map_to_local_center(grid_cell)
 	
 func move_coroutine(target):
 	return func() -> void:

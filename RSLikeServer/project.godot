@@ -17,4 +17,4 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-Skills="*res://Assets/Scripts/Skills.gd"
+Skills="*res://Assets/Scripts/Gameplay/Skills.gd"

@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://bfkfripjs4kac"]
+
+[ext_resource type="PackedScene" uid="uid://ctninp2tp6gva" path="res://Assets/Models/Characters/male_player.glb" id="1_kfxn6"]
+[ext_resource type="Script" path="res://Assets/Scripts/OtherPlayer.gd" id="2_fmxp3"]
+
+[node name="OtherPlayer" type="Node3D"]
+
+[node name="OtherPlayer" parent="." instance=ExtResource("1_kfxn6")]
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 0, 0)
+script = ExtResource("2_fmxp3")

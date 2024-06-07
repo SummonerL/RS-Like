@@ -63,6 +63,13 @@ func determine_mesh_cells(mesh_origin_cell):
 				
 	return mesh_grid_cells
 
+# a useful extension of map_to_local that returns the center of the cell
+func map_to_local_center(cell: Vector2):
+	var target = map_to_local(Vector3(cell.x, 0, cell.y))
+	target.x += (.5 * cell_size.x)
+	target.z += (.5 * cell_size.z)
+	return target
+
 func draw_cell_box(cell, wireframe_material):
 	# draw box around all non-empty cells
 	var cell_position: Vector3 = map_to_local(cell) + cell_size * 0.5  # Center the box
