@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 
 GameSettings="*res://Assets/Scripts/GameSettings.gd"
 GameManager="*res://Assets/Scripts/GameManager.gd"
+Skills="*res://Assets/Scripts/Skills.gd"
 
 [display]
 
