@@ -17,6 +17,12 @@ func prepare_for_rpc(players):
 	var player_dict = {}
 	
 	for player in players:
+		# TEMP (TESTING)
+		var rng = RandomNumberGenerator.new()
+		var x = rng.randi_range(-5, 5)
+		var y = rng.randi_range(-5, 5)
+		player.current_cell = Vector2(x, y)
+		# TEMP
 		player_dict[player.peer_id] = player.current_cell
 		
 	return player_dict

@@ -4,7 +4,13 @@
 [ext_resource type="Script" path="res://Assets/Scripts/OtherPlayer.gd" id="2_fmxp3"]
 
 [node name="OtherPlayer" type="Node3D"]
-
-[node name="OtherPlayer" parent="." instance=ExtResource("1_kfxn6")]
-transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 0, 0)
 script = ExtResource("2_fmxp3")
+
+[node name="Mesh" parent="." instance=ExtResource("1_kfxn6")]
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 0, 0)
+
+[node name="TerrainRayCast" type="RayCast3D" parent="Mesh"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6, 0)
+enabled = false
+target_position = Vector3(0, -10, 0)
+debug_shape_thickness = 1

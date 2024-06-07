@@ -9,7 +9,6 @@ var multiplayer_peer = ENetMultiplayerPeer.new()
 var url : String = "your-prod.url"
 const PORT = 9009
 
-var connected_peer_ids = []
 var connected_players = {}
 
 func _ready():
@@ -24,11 +23,16 @@ func _ready():
 @rpc
 # invoked on the client every game tick
 func tick_client(player_dict):
-	pass
+	var player_entities = __.instance_factory.get_players()
+	
+	# update position of all other players
+	for peer_id in player_dict.keys():
+		if (peer_id == multiplayer_peer.get_unique_id()): continue
+		player_entities[peer_id].teleport_to_cell(__.world_grid.map_to_local_center(player_dict[peer_id]))
 
 @rpc
 func sync_player_list(updated_connected_peer_ids):
-	connected_peer_ids = updated_connected_peer_ids
+	var connected_peer_ids = updated_connected_peer_ids
 	var my_id = multiplayer_peer.get_unique_id()
 	
 	# check for new players
