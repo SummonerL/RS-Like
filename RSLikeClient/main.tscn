@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://kovhsisnb8w3"]
+[gd_scene load_steps=15 format=3 uid="uid://kovhsisnb8w3"]
 
 [ext_resource type="Texture2D" uid="uid://bkh5qmdmo8nh" path="res://Assets/Textures/tree_bark.png" id="1_0w48q"]
 [ext_resource type="MeshLibrary" uid="uid://bvexiqcy8f8gi" path="res://Assets/Models/MeshLibraries/MainLibrary/main_mesh_library.tres" id="1_4wcq0"]
@@ -10,6 +10,7 @@
 [ext_resource type="Script" path="res://Assets/Scripts/Refs.gd" id="6_gwo08"]
 [ext_resource type="PackedScene" uid="uid://8bd23kevskwy" path="res://Assets/Models/Objects/Interface/click_flag.glb" id="7_7s4ew"]
 [ext_resource type="Script" path="res://Assets/Models/Objects/Interface/ClickFlag.gd" id="7_cf6lb"]
+[ext_resource type="Script" path="res://Assets/Scripts/GameServer.gd" id="11_7hvj2"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ybwbj"]
 sky_top_color = Color(0, 0, 0, 1)
@@ -129,3 +130,6 @@ script = ExtResource("6_gwo08")
 world_grid = NodePath("../GameViewportContainer/GameViewport/WorldGrid")
 camera = NodePath("../GameViewportContainer/GameViewport/MalePlayer/Spatial/PlayerCamera")
 click_flag = NodePath("../ClickFlag")
+
+[node name="GameServer" type="Node" parent="."]
+script = ExtResource("11_7hvj2")
