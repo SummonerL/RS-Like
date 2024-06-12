@@ -3,15 +3,15 @@
 [ext_resource type="Texture2D" uid="uid://bkh5qmdmo8nh" path="res://Assets/Textures/tree_bark.png" id="1_0w48q"]
 [ext_resource type="MeshLibrary" uid="uid://bvexiqcy8f8gi" path="res://Assets/Models/MeshLibraries/MainLibrary/main_mesh_library.tres" id="1_4wcq0"]
 [ext_resource type="Texture2D" uid="uid://c6vegrj1m6pov" path="res://Assets/Textures/client_background.png" id="2_kwwhv"]
-[ext_resource type="Script" path="res://Assets/Scripts/WorldGrid.gd" id="2_mldik"]
+[ext_resource type="Script" path="res://Assets/Scripts/Client/WorldGrid.gd" id="2_mldik"]
 [ext_resource type="PackedScene" uid="uid://ctninp2tp6gva" path="res://Assets/Models/Characters/male_player.glb" id="2_qot4a"]
-[ext_resource type="Script" path="res://Assets/Scripts/CameraSpatial.gd" id="3_fxx4k"]
-[ext_resource type="Script" path="res://Assets/Scripts/PlayerController.gd" id="4_rmypb"]
-[ext_resource type="Script" path="res://Assets/Scripts/Refs.gd" id="6_gwo08"]
+[ext_resource type="Script" path="res://Assets/Scripts/Client/CameraSpatial.gd" id="3_fxx4k"]
+[ext_resource type="Script" path="res://Assets/Scripts/Player/PlayerController.gd" id="4_rmypb"]
+[ext_resource type="Script" path="res://Assets/Scripts/Common/Refs.gd" id="6_gwo08"]
 [ext_resource type="PackedScene" uid="uid://8bd23kevskwy" path="res://Assets/Models/Objects/Interface/click_flag.glb" id="7_7s4ew"]
 [ext_resource type="Script" path="res://Assets/Models/Objects/Interface/ClickFlag.gd" id="7_cf6lb"]
-[ext_resource type="Script" path="res://Assets/Scripts/GameServer.gd" id="11_7hvj2"]
-[ext_resource type="Script" path="res://Assets/Scripts/InstanceFactory.gd" id="12_dvfxe"]
+[ext_resource type="Script" path="res://Assets/Scripts/Server/GameServer.gd" id="11_7hvj2"]
+[ext_resource type="Script" path="res://Assets/Scripts/Client/EntityManager.gd" id="13_f4ia7"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ybwbj"]
 sky_top_color = Color(0, 0, 0, 1)
@@ -114,6 +114,8 @@ enabled = false
 target_position = Vector3(0, -10, 0)
 debug_shape_thickness = 1
 
+[node name="ClientEntities" type="Node" parent="GameViewportContainer/GameViewport"]
+
 [node name="ClickFlag" parent="." node_paths=PackedStringArray("__", "terrain_cast") instance=ExtResource("7_7s4ew")]
 visible = false
 script = ExtResource("7_cf6lb")
@@ -126,17 +128,19 @@ enabled = false
 target_position = Vector3(0, -20, 0)
 debug_shape_thickness = 1
 
-[node name="Refs" type="Node3D" parent="." node_paths=PackedStringArray("world_grid", "camera", "click_flag", "game_server", "instance_factory")]
+[node name="Refs" type="Node" parent="." node_paths=PackedStringArray("world_grid", "camera", "click_flag", "game_server", "entity_manager")]
 script = ExtResource("6_gwo08")
 world_grid = NodePath("../GameViewportContainer/GameViewport/WorldGrid")
 camera = NodePath("../GameViewportContainer/GameViewport/MalePlayer/Spatial/PlayerCamera")
 click_flag = NodePath("../ClickFlag")
 game_server = NodePath("../GameServer")
-instance_factory = NodePath("../InstanceFactory")
+entity_manager = NodePath("../EntityManager")
 
 [node name="GameServer" type="Node" parent="." node_paths=PackedStringArray("__")]
 script = ExtResource("11_7hvj2")
 __ = NodePath("../Refs")
 
-[node name="InstanceFactory" type="Node" parent="."]
-script = ExtResource("12_dvfxe")
+[node name="EntityManager" type="Node" parent="." node_paths=PackedStringArray("__", "client_entities")]
+script = ExtResource("13_f4ia7")
+__ = NodePath("../Refs")
+client_entities = NodePath("../GameViewportContainer/GameViewport/ClientEntities")

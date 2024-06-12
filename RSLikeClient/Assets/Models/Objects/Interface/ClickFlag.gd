@@ -1,7 +1,7 @@
 extends Node3D
 
 # Our global Refs
-@export var __: Node3D
+@export var __: Node
 
 # Reference to the terrain RayCast (used for determining terrain height)
 @export var terrain_cast: RayCast3D

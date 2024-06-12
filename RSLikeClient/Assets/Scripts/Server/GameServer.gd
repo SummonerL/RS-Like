@@ -1,7 +1,7 @@
 extends Node
 
 # Our global Refs
-@export var __: Node3D
+@export var __: Node
 
 const DEV = true
 
@@ -9,7 +9,7 @@ var multiplayer_peer = ENetMultiplayerPeer.new()
 var url : String = "your-prod.url"
 const PORT = 9009
 
-var connected_players = {}
+var connected_player_ids: Array = []
 
 func _ready():
 	if DEV == true:
@@ -20,37 +20,45 @@ func _ready():
 	multiplayer.connection_failed.connect(_on_server_connection_failed)
 	multiplayer.server_disconnected.connect(_on_server_disconnected)
 
+# The main method of communication between server and client. Used to send serialized game entities
+@rpc
+func send_entity(serialized_entity):
+	var my_id = multiplayer_peer.get_unique_id()
+	var entity = SerializableEntity.from_dict(serialized_entity)
+
+	# Determine entity type
+	if entity is Player:
+		print("Processing peer " + str(entity.peer_id) + " for peer " + str(my_id))
+		__.entity_manager.process_player(my_id, entity as Player)
+
 @rpc
 # invoked on the client every game tick
 func tick_client(player_dict):
-	var player_entities = __.instance_factory.get_players()
-	
-	# update position of all other players
-	for peer_id in player_dict.keys():
-		if (peer_id == multiplayer_peer.get_unique_id()): continue
-		player_entities[peer_id].teleport_to_cell(__.world_grid.map_to_local_center(player_dict[peer_id]))
+	pass
 
 @rpc
 func sync_player_list(updated_connected_peer_ids):
-	var connected_peer_ids = updated_connected_peer_ids
 	var my_id = multiplayer_peer.get_unique_id()
 	
 	# check for new players
-	for id in connected_peer_ids:
-		if (id == my_id): continue
-		if not connected_players.has(id):
-			connected_players[id] = Vector2(0, 0)
+	for id in updated_connected_peer_ids:
+		if not connected_player_ids.has(id):
+			connected_player_ids.append(id)
 			
-			# instantiate the player
-			__.instance_factory.instantiate_player(id)
+			print("New Player joined the server: " + str(id))
 	
 	# check for dropped players
-	for key in connected_players.keys():
-		# Check if the key exists in the array of IDs
-			if not connected_peer_ids.has(key):
-				__.instance_factory.remove_player(key)
+	var i = 0
+	for id in connected_player_ids:
+		i += 1
+		if not updated_connected_peer_ids.has(id):
+			if (id == my_id): continue
+			# temp
+			print("Removing peer " + str(id) + " for peer " + str(my_id))
+			connected_player_ids.remove_at(i)
+			__.entity_manager.remove_player(id)
 	
-	print("Currently connected Players: " + str(connected_peer_ids))
+	print("Currently connected Players: " + str(connected_player_ids))
 
 @rpc
 # accepts and holds player requests (server imp)
@@ -64,22 +72,24 @@ signal update_player_position
 func set_player_position(target_cell):
 	emit_signal("update_player_position", target_cell)
 
+
+# Server Connection / Disconnection 
 func connect_to_server() -> void:
 	print("Connecting to server...")
 	multiplayer_peer.create_client(url, PORT)
 	multiplayer.multiplayer_peer = multiplayer_peer
 	
+func disconnect_from_server():
+	multiplayer_peer.close()
+	
+	print("Disconnected from server.")
+
 func _on_server_connected():
 	print("Connected to server!")
 
 func _on_server_connection_failed():
 	multiplayer.multiplayer_peer = null
 	print ("Connection to server failed...")
-	
-func disconnect_from_server():
-	multiplayer_peer.close()
-	
-	print("Disconnected from server.")
 
 func _on_server_disconnected():
 	multiplayer_peer.close()

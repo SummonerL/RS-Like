@@ -7,7 +7,7 @@ var generic_request = null
 var movement_path = [] # Vector2
 
 # Our global Refs
-@export var __: Node3D
+@export var __: Node
 
 # Reference to the terrain RayCast (used for determining terrain height)
 @export var terrain_cast: RayCast3D

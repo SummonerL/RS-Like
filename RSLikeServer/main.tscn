@@ -3,7 +3,35 @@
 [ext_resource type="Script" path="res://Assets/Scripts/Server/GameServer.gd" id="1_ve3ib"]
 [ext_resource type="Script" path="res://Assets/Scripts/Server/RequestManager.gd" id="2_stpiy"]
 [ext_resource type="Script" path="res://Assets/Scripts/Common/Refs.gd" id="3_n11lj"]
-[ext_resource type="Script" path="res://Assets/Scripts/Server/PlayerInfo.gd" id="4_7ur6b"]
+
+[sub_resource type="GDScript" id="GDScript_f8n22"]
+script/source = "extends Node
+
+class PlayerInfo:
+	var current_cell: Vector2 # position
+	var peer_id
+
+	func _init(id):
+		self.peer_id = id
+		self.current_cell = Constants.DEFAULT_COORDINATES
+		
+func get_peer_ids(players):
+	return players.map(func(player): return player.peer_id)
+
+func prepare_for_rpc(players):
+	var player_dict = {}
+	
+	for player in players:
+		# TEMP (TESTING)
+		var rng = RandomNumberGenerator.new()
+		var x = rng.randi_range(-5, 5)
+		var y = rng.randi_range(-5, 5)
+		player.current_cell = Vector2(x, y)
+		# TEMP
+		player_dict[player.peer_id] = player.current_cell
+		
+	return player_dict
+"
 
 [node name="Main" type="Node2D"]
 
@@ -22,4 +50,4 @@ request_manager = NodePath("../RequestManager")
 player_info = NodePath("../PlayerInfo")
 
 [node name="PlayerInfo" type="Node" parent="."]
-script = ExtResource("4_7ur6b")
+script = SubResource("GDScript_f8n22")
