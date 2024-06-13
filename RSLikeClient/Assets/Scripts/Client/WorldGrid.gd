@@ -22,7 +22,7 @@ func _ready():
 	used_grid_cells_2d = used_grid_cells.map(func(cell): return Vector2(cell.x, cell.z))
 
 	# debugging 
-	#show_grid()
+	# show_grid()
 	
 # used for debugging
 func show_grid():

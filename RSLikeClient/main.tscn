@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://kovhsisnb8w3"]
+[gd_scene load_steps=17 format=3 uid="uid://kovhsisnb8w3"]
 
 [ext_resource type="Texture2D" uid="uid://bkh5qmdmo8nh" path="res://Assets/Textures/tree_bark.png" id="1_0w48q"]
 [ext_resource type="MeshLibrary" uid="uid://bvexiqcy8f8gi" path="res://Assets/Models/MeshLibraries/MainLibrary/main_mesh_library.tres" id="1_4wcq0"]
@@ -10,6 +10,7 @@
 [ext_resource type="Script" path="res://Assets/Scripts/Common/Refs.gd" id="6_gwo08"]
 [ext_resource type="PackedScene" uid="uid://8bd23kevskwy" path="res://Assets/Models/Objects/Interface/click_flag.glb" id="7_7s4ew"]
 [ext_resource type="Script" path="res://Assets/Models/Objects/Interface/ClickFlag.gd" id="7_cf6lb"]
+[ext_resource type="Script" path="res://Assets/Scripts/Client/ClientEntitiesParentNode.gd" id="8_3j7w1"]
 [ext_resource type="Script" path="res://Assets/Scripts/Server/GameServer.gd" id="11_7hvj2"]
 [ext_resource type="Script" path="res://Assets/Scripts/Client/EntityManager.gd" id="13_f4ia7"]
 
@@ -114,7 +115,9 @@ enabled = false
 target_position = Vector3(0, -10, 0)
 debug_shape_thickness = 1
 
-[node name="ClientEntities" type="Node" parent="GameViewportContainer/GameViewport"]
+[node name="ClientEntities" type="Node" parent="GameViewportContainer/GameViewport" node_paths=PackedStringArray("__")]
+script = ExtResource("8_3j7w1")
+__ = NodePath("../../../Refs")
 
 [node name="ClickFlag" parent="." node_paths=PackedStringArray("__", "terrain_cast") instance=ExtResource("7_7s4ew")]
 visible = false

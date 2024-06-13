@@ -11,8 +11,10 @@ var url : String = "your-prod.url"
 const PORT = 9009
 const MAX_CLIENTS = 4
 
-# Connected players
-var connected_players: Array[Player] = [] # See Player class
+# All instantiated entities
+var all_entities = {
+	Constants.ENTITY_TYPES.PLAYER: [] # connected players
+}
 
 # Define the tick interval in seconds (600ms = 0.6 seconds)
 const TICK_INTERVAL = .6
@@ -62,10 +64,10 @@ func add_player(new_peer_id : int) -> void:
 	var new_player = Player.new()
 	new_player.peer_id = new_peer_id
 	
-	connected_players.append(new_player)
+	all_entities[Constants.ENTITY_TYPES.PLAYER].append(new_player)
 	print("Player " + str(new_peer_id) + " joined.")
 	
-	var connected_peer_ids = connected_players.map(func(player): return player.peer_id)
+	var connected_peer_ids = all_entities[Constants.ENTITY_TYPES.PLAYER].map(func(player): return player.peer_id)
 	print("Currently connected Players: " + str(connected_peer_ids))
 
 	# notify all peers of new player
@@ -74,20 +76,24 @@ func add_player(new_peer_id : int) -> void:
 	# only send player entity details to interested peers
 	send_entity_to_interested_peers(new_player)
 	
+	# send the entities relevant to the new player
+	for entity in determine_relevant_entities(new_player):
+		rpc_id(new_peer_id, "send_entity", entity.to_dict())
+	
 	# set the new player position
 	rpc_id(new_peer_id, "set_player_position", new_player.current_cell)
 
 # Remove player object and update interested peers
 func remove_player(leaving_peer_id : int) -> void:
 	var i = 0
-	for player in connected_players:
+	for player in all_entities[Constants.ENTITY_TYPES.PLAYER]:
 		if (player.peer_id == leaving_peer_id):
-			connected_players.remove_at(i)
+			all_entities[Constants.ENTITY_TYPES.PLAYER].remove_at(i)
 		i += 1
 		
 	print("Player " + str(leaving_peer_id) + " disconnected.")
 	
-	var connected_peer_ids = connected_players.map(func(player): return player.peer_id)
+	var connected_peer_ids = all_entities[Constants.ENTITY_TYPES.PLAYER].map(func(player): return player.peer_id)
 	rpc("sync_player_list", connected_peer_ids)
 	
 # An 'interested peer' is a connected peer that is interested in changes to a given entity.
@@ -101,7 +107,7 @@ func determine_interested_peers(serializable_entity: SerializableEntity) -> Arra
 	# for now, we will assume peers within a certain range of this object are interested
 	var entity_pos = serializable_entity.current_cell
 	var interested_peer_ids = []
-	for peer: Player in connected_players:
+	for peer: Player in all_entities[Constants.ENTITY_TYPES.PLAYER]:
 		var distance = Utilities.get_distance(peer.current_cell, entity_pos)
 		if distance <= Constants.MAX_INTERESTED: interested_peer_ids.append(peer.peer_id)
 		
@@ -111,6 +117,16 @@ func send_entity_to_interested_peers(serializable_entity) -> void:
 	var interested_peer_ids = determine_interested_peers(serializable_entity)
 	for peer_id in interested_peer_ids:
 		rpc_id(peer_id, "send_entity", serializable_entity.to_dict()) 
+
+# From the full list of entities, determine which entities are relevant to the player
+func determine_relevant_entities(peer: Player) -> Array[SerializableEntity]:
+	var relevant_entities: Array[SerializableEntity] = []
+	for entity_type in all_entities.keys():
+		for entity: SerializableEntity in all_entities[entity_type]:
+			var distance = Utilities.get_distance(peer.current_cell, entity.current_cell)
+			if distance <= Constants.MAX_INTERESTED: relevant_entities.append(entity)
+
+	return relevant_entities
 
 # Function called on every tick
 func _on_tick():

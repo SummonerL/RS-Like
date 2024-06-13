@@ -28,11 +28,16 @@ func process_player(my_id, player_entity: Player):
 			player = visible_player
 	if (player == null):
 		# This player will now be visible
+		add_visible_player(player_entity)
+
+
+func add_visible_player(player_entity: Player):
 		var player_node_instance = other_player_scene.instantiate()
 		visible_players.append(PlayerEntityNode.new(player_entity, player_node_instance));
 		client_entities.add_child(player_node_instance)
-		
-func remove_player(peer_id):
+		player_node_instance.teleport_to_cell(player_entity.current_cell) # position the player in the game world
+
+func remove_visible_player(peer_id):
 	var player_to_remove: PlayerEntityNode = null
 	for visible_player in visible_players:
 		if peer_id == visible_player.player_entity.peer_id:

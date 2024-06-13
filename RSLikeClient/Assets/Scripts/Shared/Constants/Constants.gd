@@ -7,3 +7,4 @@ static var DEFAULT_COORDINATES = Vector2(0, 0)
 static var MAX_INTERESTED = 18;
 
 enum PLAYER_STATES {IDLE, MOVING}
+enum ENTITY_TYPES {PLAYER}

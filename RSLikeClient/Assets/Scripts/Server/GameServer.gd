@@ -28,7 +28,6 @@ func send_entity(serialized_entity):
 
 	# Determine entity type
 	if entity is Player:
-		print("Processing peer " + str(entity.peer_id) + " for peer " + str(my_id))
 		__.entity_manager.process_player(my_id, entity as Player)
 
 @rpc
@@ -53,10 +52,8 @@ func sync_player_list(updated_connected_peer_ids):
 		i += 1
 		if not updated_connected_peer_ids.has(id):
 			if (id == my_id): continue
-			# temp
-			print("Removing peer " + str(id) + " for peer " + str(my_id))
 			connected_player_ids.remove_at(i)
-			__.entity_manager.remove_player(id)
+			__.entity_manager.remove_visible_player(id)
 	
 	print("Currently connected Players: " + str(connected_player_ids))
 

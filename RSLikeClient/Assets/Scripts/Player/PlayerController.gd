@@ -78,6 +78,18 @@ func move_to_cell(grid_cell):
 	
 func teleport_to_cell(grid_cell):
 	global_transform.origin = __.world_grid.map_to_local_center(grid_cell)
+	snap_to_terrain()
+
+# update the y position to match the terrain
+func snap_to_terrain():
+		terrain_cast.enabled = true # determine terrain height
+		
+		terrain_cast.force_raycast_update()
+		if (terrain_cast.is_colliding()):
+			global_transform.origin.y = terrain_cast.get_collision_point().y
+
+		terrain_cast.enabled = false
+
 	
 func move_coroutine(target):
 	return func() -> void:
