@@ -1,0 +1,149 @@
+[gd_scene load_steps=17 format=3 uid="uid://kovhsisnb8w3"]
+
+[ext_resource type="Texture2D" uid="uid://bkh5qmdmo8nh" path="res://Assets/Textures/tree_bark.png" id="1_0w48q"]
+[ext_resource type="MeshLibrary" uid="uid://bvexiqcy8f8gi" path="res://Assets/Models/MeshLibraries/MainLibrary/main_mesh_library.tres" id="1_4wcq0"]
+[ext_resource type="Texture2D" uid="uid://c6vegrj1m6pov" path="res://Assets/Textures/client_background.png" id="2_kwwhv"]
+[ext_resource type="Script" path="res://Assets/Scripts/Client/WorldGrid.gd" id="2_mldik"]
+[ext_resource type="PackedScene" uid="uid://ctninp2tp6gva" path="res://Assets/Models/Characters/male_player.glb" id="2_qot4a"]
+[ext_resource type="Script" path="res://Assets/Scripts/Client/CameraSpatial.gd" id="3_fxx4k"]
+[ext_resource type="Script" path="res://Assets/Scripts/Player/PlayerController.gd" id="4_rmypb"]
+[ext_resource type="Script" path="res://Assets/Scripts/Common/Refs.gd" id="6_gwo08"]
+[ext_resource type="PackedScene" uid="uid://8bd23kevskwy" path="res://Assets/Models/Objects/Interface/click_flag.glb" id="7_7s4ew"]
+[ext_resource type="Script" path="res://Assets/Models/Objects/Interface/ClickFlag.gd" id="7_cf6lb"]
+[ext_resource type="Script" path="res://Assets/Scripts/Client/ClientEntitiesParentNode.gd" id="8_3j7w1"]
+[ext_resource type="Script" path="res://Assets/Scripts/Server/GameServer.gd" id="11_7hvj2"]
+[ext_resource type="Script" path="res://Assets/Scripts/Client/EntityManager.gd" id="13_f4ia7"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ybwbj"]
+sky_top_color = Color(0, 0, 0, 1)
+sky_horizon_color = Color(0.5, 0.5, 0.5, 1)
+ground_bottom_color = Color(0, 0, 0, 1)
+ground_horizon_color = Color(0.5, 0.5, 0.5, 1)
+
+[sub_resource type="Sky" id="Sky_jj3uj"]
+sky_material = SubResource("ProceduralSkyMaterial_ybwbj")
+radiance_size = 0
+
+[sub_resource type="Environment" id="Environment_ibg2b"]
+background_mode = 2
+background_energy_multiplier = 3.0
+sky = SubResource("Sky_jj3uj")
+sky_custom_fov = 1.0
+ambient_light_energy = 0.0
+reflected_light_source = 1
+
+[node name="Main" type="Node3D"]
+
+[node name="UIViewportContainer" type="SubViewportContainer" parent="."]
+offset_right = 800.0
+offset_bottom = 600.0
+
+[node name="UIViewport" type="SubViewport" parent="UIViewportContainer"]
+handle_input_locally = false
+size = Vector2i(800, 600)
+render_target_update_mode = 4
+
+[node name="UI_Background" type="Sprite2D" parent="UIViewportContainer/UIViewport"]
+texture = ExtResource("1_0w48q")
+
+[node name="Client_Background" type="Sprite2D" parent="UIViewportContainer/UIViewport"]
+modulate = Color(1, 1, 1, 0.764706)
+scale = Vector2(1.856, 1.4)
+texture = ExtResource("2_kwwhv")
+
+[node name="UI_GameMenu" type="Sprite2D" parent="UIViewportContainer/UIViewport"]
+modulate = Color(1, 1, 1, 0.835294)
+position = Vector2(678.57, 401.61)
+scale = Vector2(0.355, 0.62)
+texture = ExtResource("2_kwwhv")
+
+[node name="GameViewportContainer" type="SubViewportContainer" parent="."]
+offset_left = 3.0
+offset_top = 3.0
+offset_right = 553.0
+offset_bottom = 416.0
+
+[node name="GameViewport" type="SubViewport" parent="GameViewportContainer"]
+handle_input_locally = false
+size = Vector2i(550, 413)
+render_target_update_mode = 4
+
+[node name="MainWorldEnvironment" type="WorldEnvironment" parent="GameViewportContainer/GameViewport"]
+environment = SubResource("Environment_ibg2b")
+
+[node name="MainGlobalLighting" type="DirectionalLight3D" parent="GameViewportContainer/GameViewport"]
+transform = Transform3D(-0.146083, 0.364175, -0.919802, 0, 0.929777, 0.368124, 0.989272, 0.0537767, -0.135825, 0, 0, 0)
+shadow_enabled = true
+directional_shadow_mode = 1
+directional_shadow_fade_start = 0.0
+directional_shadow_max_distance = 1.0
+
+[node name="WorldGrid" type="GridMap" parent="GameViewportContainer/GameViewport" node_paths=PackedStringArray("grid_terrain_ray")]
+mesh_library = ExtResource("1_4wcq0")
+cell_size = Vector3(5, 1, 5)
+cell_center_x = false
+cell_center_y = false
+cell_center_z = false
+data = {
+"cells": PackedInt32Array(0, 0, 0, 0, 20, 0)
+}
+script = ExtResource("2_mldik")
+grid_terrain_ray = NodePath("GridTerrainRayCast")
+
+[node name="GridTerrainRayCast" type="RayCast3D" parent="GameViewportContainer/GameViewport/WorldGrid"]
+enabled = false
+exclude_parent = false
+target_position = Vector3(0, -10, 0)
+
+[node name="MalePlayer" parent="GameViewportContainer/GameViewport" node_paths=PackedStringArray("__", "terrain_cast") instance=ExtResource("2_qot4a")]
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 22.7081, -0.233843, 12.1074)
+script = ExtResource("4_rmypb")
+__ = NodePath("../../../Refs")
+terrain_cast = NodePath("TerrainRayCast")
+
+[node name="Spatial" type="Node3D" parent="GameViewportContainer/GameViewport/MalePlayer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
+script = ExtResource("3_fxx4k")
+
+[node name="PlayerCamera" type="Camera3D" parent="GameViewportContainer/GameViewport/MalePlayer/Spatial"]
+transform = Transform3D(-0.666667, 0, 5.82819e-08, 0, 0.666667, 0, -5.82819e-08, 0, -0.666667, 0, 0, -12)
+far = 90.0
+
+[node name="TerrainRayCast" type="RayCast3D" parent="GameViewportContainer/GameViewport/MalePlayer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6, 0)
+enabled = false
+target_position = Vector3(0, -10, 0)
+debug_shape_thickness = 1
+
+[node name="ClientEntities" type="Node" parent="GameViewportContainer/GameViewport" node_paths=PackedStringArray("__")]
+script = ExtResource("8_3j7w1")
+__ = NodePath("../../../Refs")
+
+[node name="ClickFlag" parent="." node_paths=PackedStringArray("__", "terrain_cast") instance=ExtResource("7_7s4ew")]
+visible = false
+script = ExtResource("7_cf6lb")
+__ = NodePath("../Refs")
+terrain_cast = NodePath("TerrainRayCast")
+
+[node name="TerrainRayCast" type="RayCast3D" parent="ClickFlag"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10, 0)
+enabled = false
+target_position = Vector3(0, -20, 0)
+debug_shape_thickness = 1
+
+[node name="Refs" type="Node" parent="." node_paths=PackedStringArray("world_grid", "camera", "click_flag", "game_server", "entity_manager")]
+script = ExtResource("6_gwo08")
+world_grid = NodePath("../GameViewportContainer/GameViewport/WorldGrid")
+camera = NodePath("../GameViewportContainer/GameViewport/MalePlayer/Spatial/PlayerCamera")
+click_flag = NodePath("../ClickFlag")
+game_server = NodePath("../GameServer")
+entity_manager = NodePath("../EntityManager")
+
+[node name="GameServer" type="Node" parent="." node_paths=PackedStringArray("__")]
+script = ExtResource("11_7hvj2")
+__ = NodePath("../Refs")
+
+[node name="EntityManager" type="Node" parent="." node_paths=PackedStringArray("__", "client_entities")]
+script = ExtResource("13_f4ia7")
+__ = NodePath("../Refs")
+client_entities = NodePath("../GameViewportContainer/GameViewport/ClientEntities")

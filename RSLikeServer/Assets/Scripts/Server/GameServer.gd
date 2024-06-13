@@ -1,9 +1,9 @@
-extends Node
+class_name GameServer extends Node
 
 const DEV = true
 
 # Reference to the Refs object
-@export var __: Node
+@export var __: Refs
 
 # Server Information
 var multiplayer_peer = ENetMultiplayerPeer.new()
@@ -13,7 +13,7 @@ const MAX_CLIENTS = 4
 
 # All instantiated entities
 var all_entities = {
-	Constants.ENTITY_TYPES.PLAYER: [] # connected players
+	Constants.ENTITY_TYPE.PLAYER: [] # connected players
 }
 
 # Define the tick interval in seconds (600ms = 0.6 seconds)
@@ -43,6 +43,8 @@ func _ready():
 	multiplayer_peer.peer_connected.connect(_on_peer_connected)
 	multiplayer_peer.peer_disconnected.connect(_on_peer_disconnected)
 	
+	__.request_manager.entity_updated.connect(_on_entity_updated)
+	
 	print("Server is up and running!")
 
 # Peer connect / disconnect handlers
@@ -64,10 +66,10 @@ func add_player(new_peer_id : int) -> void:
 	var new_player = Player.new()
 	new_player.peer_id = new_peer_id
 	
-	all_entities[Constants.ENTITY_TYPES.PLAYER].append(new_player)
+	all_entities[Constants.ENTITY_TYPE.PLAYER].append(new_player)
 	print("Player " + str(new_peer_id) + " joined.")
 	
-	var connected_peer_ids = all_entities[Constants.ENTITY_TYPES.PLAYER].map(func(player): return player.peer_id)
+	var connected_peer_ids = all_entities[Constants.ENTITY_TYPE.PLAYER].map(func(player): return player.peer_id)
 	print("Currently connected Players: " + str(connected_peer_ids))
 
 	# notify all peers of new player
@@ -86,14 +88,14 @@ func add_player(new_peer_id : int) -> void:
 # Remove player object and update interested peers
 func remove_player(leaving_peer_id : int) -> void:
 	var i = 0
-	for player in all_entities[Constants.ENTITY_TYPES.PLAYER]:
+	for player in all_entities[Constants.ENTITY_TYPE.PLAYER]:
 		if (player.peer_id == leaving_peer_id):
-			all_entities[Constants.ENTITY_TYPES.PLAYER].remove_at(i)
+			all_entities[Constants.ENTITY_TYPE.PLAYER].remove_at(i)
 		i += 1
 		
 	print("Player " + str(leaving_peer_id) + " disconnected.")
 	
-	var connected_peer_ids = all_entities[Constants.ENTITY_TYPES.PLAYER].map(func(player): return player.peer_id)
+	var connected_peer_ids = all_entities[Constants.ENTITY_TYPE.PLAYER].map(func(player): return player.peer_id)
 	rpc("sync_player_list", connected_peer_ids)
 	
 # An 'interested peer' is a connected peer that is interested in changes to a given entity.
@@ -107,7 +109,7 @@ func determine_interested_peers(serializable_entity: SerializableEntity) -> Arra
 	# for now, we will assume peers within a certain range of this object are interested
 	var entity_pos = serializable_entity.current_cell
 	var interested_peer_ids = []
-	for peer: Player in all_entities[Constants.ENTITY_TYPES.PLAYER]:
+	for peer: Player in all_entities[Constants.ENTITY_TYPE.PLAYER]:
 		var distance = Utilities.get_distance(peer.current_cell, entity_pos)
 		if distance <= Constants.MAX_INTERESTED: interested_peer_ids.append(peer.peer_id)
 		
@@ -128,6 +130,10 @@ func determine_relevant_entities(peer: Player) -> Array[SerializableEntity]:
 
 	return relevant_entities
 
+# generally called whenever the RequestManager updated an entity, which we will need to send back to interested peers
+func _on_entity_updated(entity: SerializableEntity):
+	send_entity_to_interested_peers(entity)
+
 # Function called on every tick
 func _on_tick():
 	emit_signal("tick")
@@ -142,10 +148,12 @@ func sync_player_list(_updated_connected_peer_ids):
 	pass # only implemented in client (but still has to exist here)
 	
 
-@rpc
+@rpc("any_peer") # signifies all peers can execute this proc
 # accepts and holds player requests 
-func new_player_request(target_cell):
-	pass
+func new_player_request(request: Dictionary):
+	var peer_id = multiplayer.get_remote_sender_id()
+	var player = all_entities[Constants.ENTITY_TYPE.PLAYER].filter(func(player): return player.peer_id == peer_id)[0]
+	__.request_manager.new_request(request["Type"], player, request["Target"])
 
 
 @rpc

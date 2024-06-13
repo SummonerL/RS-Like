@@ -1,6 +1,5 @@
-extends Node
+class_name Refs extends Node
 
 # Common References
-@export var game_server: Node
-@export var request_manager: Node
-@export var player_info: Node
+@export var game_server: GameServer
+@export var request_manager: RequestManager

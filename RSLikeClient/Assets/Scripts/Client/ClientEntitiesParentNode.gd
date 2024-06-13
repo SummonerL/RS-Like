@@ -1,4 +1,4 @@
 extends Node
 
 # Our global Refs
-@export var __: Node
+@export var __: Refs

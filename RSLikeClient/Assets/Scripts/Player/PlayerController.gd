@@ -1,13 +1,10 @@
 extends Node3D
 
-# Variable to store the target position for the generic action request
-var generic_request = null
-
 # Array to store the movement path for the player
 var movement_path = [] # Vector2
 
 # Our global Refs
-@export var __: Node
+@export var __: Refs
 
 # Reference to the terrain RayCast (used for determining terrain height)
 @export var terrain_cast: RayCast3D
@@ -21,6 +18,7 @@ func _ready():
 	
 	# Server requests to set (teleport) the player position
 	__.game_server.connect("update_player_position", teleport_to_cell)
+	__.entity_manager.connect("process_self", _on_self_entity_updated)
 	
 	mesh = get_node("/root/Main/GameViewportContainer/GameViewport/MalePlayer/Cube")
 
@@ -61,15 +59,15 @@ func generic_action_request(target_position):
 		__.click_flag.move_flag(intersection_point)
 		
 		# submit the request to the server
-		
-		generic_request = target_grid_map_coordinate
+		__.game_server.send_player_request(Constants.REQUEST_TYPE.MOVE, Vector2(target_grid_map_coordinate.x, target_grid_map_coordinate.z))
 	
-func process_generic_request():
+func process_movement(target_cell: Vector2):
 	# Assuming this is a walk request, determine and populate the walk path
 	# TODO: Determine the request type
 	var source_cell = __.world_grid.local_to_map(Vector3(position.x, 0, position.z))
 	
-	movement_path = __.world_grid.find_path(Vector2(source_cell.x, source_cell.z), Vector2(generic_request.x, generic_request.z))
+	# TODO: The server should ideally determine the movement path.
+	movement_path = __.world_grid.find_path(Vector2(source_cell.x, source_cell.z), target_cell)
 	
 func move_to_cell(grid_cell):
 	var target = __.world_grid.map_to_local_center(grid_cell)
@@ -128,11 +126,12 @@ func move_coroutine(target):
 	
 # triggered every game 'tick'
 func _on_tick():
-	# Process the move request during the tick (eventually, this should be done on the "server" side
-	if generic_request != null:
-		process_generic_request()
-		generic_request = null
-		
+	# Process the move request during the tick (eventually, this should be done on the "server" side		
 	if (len(movement_path) > 0):
 		# move to next cell
 		move_to_cell(movement_path.pop_front())
+		
+func _on_self_entity_updated(my_entity: Player):
+	match my_entity.state:
+		Constants.PLAYER_STATE.MOVING:
+			process_movement(my_entity.target_cell)

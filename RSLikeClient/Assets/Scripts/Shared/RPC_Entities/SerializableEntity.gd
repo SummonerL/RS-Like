@@ -13,7 +13,8 @@
 class_name SerializableEntity
 
 # TODO: Determine if there would be any non-positionable entities.
-var current_cell: Vector2 # position of this entity in the world
+# position of this entity in the world
+var current_cell: Vector2
 
 # Convert instance to a dictionary.
 func to_dict() -> Dictionary:
@@ -27,7 +28,6 @@ func to_dict() -> Dictionary:
 			result[property.name] = get(property.name)
 	
 	return result
-
 
 # Populate the instance from a dictionary.
 static func from_dict(data: Dictionary) -> SerializableEntity:

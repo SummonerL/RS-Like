@@ -1,7 +1,7 @@
-extends Node
+class_name GameServer extends Node
 
 # Our global Refs
-@export var __: Node
+@export var __: Refs
 
 const DEV = true
 
@@ -49,17 +49,17 @@ func sync_player_list(updated_connected_peer_ids):
 	# check for dropped players
 	var i = 0
 	for id in connected_player_ids:
-		i += 1
 		if not updated_connected_peer_ids.has(id):
 			if (id == my_id): continue
 			connected_player_ids.remove_at(i)
 			__.entity_manager.remove_visible_player(id)
+		i += 1
 	
 	print("Currently connected Players: " + str(connected_player_ids))
 
-@rpc
+@rpc("any_peer")
 # accepts and holds player requests (server imp)
-func new_player_request():
+func new_player_request(request: Dictionary):
 	pass
 	
 # A signal to notify the player that the server is requesting a position update
@@ -68,7 +68,7 @@ signal update_player_position
 # sets the connected player position in the game world
 func set_player_position(target_cell):
 	emit_signal("update_player_position", target_cell)
-
+	
 
 # Server Connection / Disconnection 
 func connect_to_server() -> void:
@@ -92,3 +92,7 @@ func _on_server_disconnected():
 	multiplayer_peer.close()
 	
 	print("Connection to server lost...")
+	
+func send_player_request(type: Constants.REQUEST_TYPE, target_cell: Vector2):
+	var request = {"Type": type, "Target": target_cell}
+	rpc("new_player_request", request)

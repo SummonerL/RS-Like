@@ -1,13 +1,16 @@
 extends Node
 
 # Our global Refs
-@export var __: Node
+@export var __: Refs
 
 # List of visible players
 var visible_players: Array[PlayerEntityNode] = []
 
 # Parent to all entities created on the client
 @export var client_entities: Node
+
+# Singal for indicating that the current player entity was updated by the server, thus requiring client changes
+signal process_self(Player)
 
 # Scene for initializing the player
 var other_player_scene = load("res://Assets/Scenes/OtherPlayer.tscn")
@@ -19,8 +22,12 @@ var other_player_scene = load("res://Assets/Scenes/OtherPlayer.tscn")
 # Note that the server will also usually send information to a client when there is a change in state in
 # the entity.
 func process_player(my_id, player_entity: Player):
-	if (my_id == player_entity.peer_id): return # this is not relevant for this current player
+	if (my_id == player_entity.peer_id): 
+		emit_signal("process_self", player_entity)
+		return
 		
+	# process other players
+	
 	# first, determine if this player is already visible to the active player	
 	var player: PlayerEntityNode = null
 	for visible_player in visible_players:
@@ -29,7 +36,6 @@ func process_player(my_id, player_entity: Player):
 	if (player == null):
 		# This player will now be visible
 		add_visible_player(player_entity)
-
 
 func add_visible_player(player_entity: Player):
 		var player_node_instance = other_player_scene.instantiate()
