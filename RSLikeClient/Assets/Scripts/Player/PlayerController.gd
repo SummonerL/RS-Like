@@ -62,8 +62,7 @@ func generic_action_request(target_position):
 		__.game_server.send_player_request(Constants.REQUEST_TYPE.MOVE, Vector2(target_grid_map_coordinate.x, target_grid_map_coordinate.z))
 	
 func process_movement(target_cell: Vector2):
-	# Assuming this is a walk request, determine and populate the walk path
-	# TODO: Determine the request type
+	
 	var source_cell = __.world_grid.local_to_map(Vector3(position.x, 0, position.z))
 	
 	# TODO: The server should ideally determine the movement path.

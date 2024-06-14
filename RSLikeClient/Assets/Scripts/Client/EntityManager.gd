@@ -25,17 +25,20 @@ func process_player(my_id, player_entity: Player):
 	if (my_id == player_entity.peer_id): 
 		emit_signal("process_self", player_entity)
 		return
-		
-	# process other players
 	
 	# first, determine if this player is already visible to the active player	
-	var player: PlayerEntityNode = null
+	var player_entity_node: PlayerEntityNode = null
 	for visible_player in visible_players:
 		if player_entity.peer_id == visible_player.player_entity.peer_id:
-			player = visible_player
-	if (player == null):
+			player_entity_node = visible_player
+	if (player_entity_node == null):
 		# This player will now be visible
 		add_visible_player(player_entity)
+		
+	# then, process the other player based on the state
+	match player_entity.state:
+		Constants.PLAYER_STATE.MOVING:
+			player_entity_node.player_node.process_movement(player_entity.target_cell)
 
 func add_visible_player(player_entity: Player):
 		var player_node_instance = other_player_scene.instantiate()
