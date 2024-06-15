@@ -1,10 +1,13 @@
-[gd_scene load_steps=3 format=3 uid="uid://bfb607xdieouo"]
+[gd_scene load_steps=4 format=3 uid="uid://bfb607xdieouo"]
 
 [ext_resource type="PackedScene" uid="uid://3jpra031j77o" path="res://Assets/Models/Environment/0_0_sand.tscn" id="2_ei4q0"]
 [ext_resource type="PackedScene" uid="uid://dcopv1l1s8sg1" path="res://Assets/Models/Environment/base_plane.tscn" id="2_srv5b"]
+[ext_resource type="PackedScene" uid="uid://dugv0ijsrteqn" path="res://Assets/Models/Environment/0_0_woodlands.tscn" id="3_wmake"]
 
 [node name="Library" type="Node3D"]
 
 [node name="0_0" parent="." instance=ExtResource("2_ei4q0")]
 
 [node name="base_plane" parent="." instance=ExtResource("2_srv5b")]
+
+[node name="0_0_woodlands" parent="." instance=ExtResource("3_wmake")]

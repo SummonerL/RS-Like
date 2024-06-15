@@ -85,7 +85,7 @@ cell_center_x = false
 cell_center_y = false
 cell_center_z = false
 data = {
-"cells": PackedInt32Array(0, 0, 0, 0, 20, 0)
+"cells": PackedInt32Array(0, 0, 2)
 }
 script = ExtResource("2_mldik")
 grid_terrain_ray = NodePath("GridTerrainRayCast")
@@ -93,7 +93,7 @@ grid_terrain_ray = NodePath("GridTerrainRayCast")
 [node name="GridTerrainRayCast" type="RayCast3D" parent="GameViewportContainer/GameViewport/WorldGrid"]
 enabled = false
 exclude_parent = false
-target_position = Vector3(0, -10, 0)
+target_position = Vector3(0, -30, 0)
 
 [node name="MalePlayer" parent="GameViewportContainer/GameViewport" node_paths=PackedStringArray("__", "terrain_cast") instance=ExtResource("2_qot4a")]
 transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 22.7081, -0.233843, 12.1074)
