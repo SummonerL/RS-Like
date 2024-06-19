@@ -15,6 +15,7 @@ class_name SerializableEntity
 # TODO: Determine if there would be any non-positionable entities.
 # position of this entity in the world
 var current_cell: Vector2
+var target_cell: Vector2 # used for action requests, should be the same as current_cell when IDLE
 
 # Convert instance to a dictionary.
 func to_dict() -> Dictionary:

@@ -12,3 +12,4 @@ class_name Refs extends Node
 @export var click_flag: Node3D
 @export var game_server: GameServer
 @export var entity_manager: Node
+@export var main_player: Node3D

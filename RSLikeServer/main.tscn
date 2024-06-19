@@ -5,6 +5,7 @@
 [ext_resource type="Script" path="res://Assets/Scripts/Common/Refs.gd" id="3_n11lj"]
 
 [node name="Main" type="Node2D"]
+visible = false
 
 [node name="GameServer" type="Node" parent="." node_paths=PackedStringArray("__")]
 script = ExtResource("1_ve3ib")

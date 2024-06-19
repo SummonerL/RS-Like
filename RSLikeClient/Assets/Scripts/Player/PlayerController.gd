@@ -123,6 +123,10 @@ func move_coroutine(target):
 		global_transform.origin = target
 		terrain_cast.enabled = false
 	
+func get_current_tile() -> Vector2:
+	var grid_cell_v3 = __.world_grid.local_to_map(Vector3(position.x, 0, position.z))
+	return Vector2(grid_cell_v3.x, grid_cell_v3.z)
+	
 # triggered every game 'tick'
 func _on_tick():
 	# Process the move request during the tick (eventually, this should be done on the "server" side		

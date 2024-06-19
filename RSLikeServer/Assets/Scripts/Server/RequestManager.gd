@@ -20,14 +20,17 @@ func new_request(type: Constants.REQUEST_TYPE, player: Player, target: Vector2):
 	player_requests.append(request)
 	
 # requests wil lbe processed as first-in first-out
-func _process_requests():
+func _process_requests(_caller: GameServer):
 	while player_requests.size() > 0:
 		var request: PlayerRequest = player_requests.pop_front()
 		
 		match request.request_type:
 			Constants.REQUEST_TYPE.MOVE:
-				request.player.state = Constants.PLAYER_STATE.MOVING
-				request.player.target_cell = request.target_cell
-				emit_signal("entity_updated", request.player)
+				var player = request.player
+				player.target_cell = request.target_cell
+				player.movement_grid = Utilities.find_path(player.current_cell, request.target_cell)
+				player.set_state(Constants.PLAYER_STATE.MOVING)
+				__.game_server.connect("tick", player._move_by_tick)
+				emit_signal("entity_updated", player)
 			_:
 				pass

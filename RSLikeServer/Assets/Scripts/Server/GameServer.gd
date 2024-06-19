@@ -108,10 +108,13 @@ func remove_player(leaving_peer_id : int) -> void:
 func determine_interested_peers(serializable_entity: SerializableEntity) -> Array:
 	# for now, we will assume peers within a certain range of this object are interested
 	var entity_pos = serializable_entity.current_cell
+	var target_pos = serializable_entity.target_cell
 	var interested_peer_ids = []
 	for peer: Player in all_entities[Constants.ENTITY_TYPE.PLAYER]:
-		var distance = Utilities.get_distance(peer.current_cell, entity_pos)
-		if distance <= Constants.MAX_INTERESTED: interested_peer_ids.append(peer.peer_id)
+		var current_distance = Utilities.get_distance(peer.current_cell, entity_pos)
+		var target_distance = Utilities.get_distance(peer.current_cell, target_pos)
+		if (current_distance <= Constants.MAX_INTERESTED or target_distance <= Constants.MAX_INTERESTED): 
+			interested_peer_ids.append(peer.peer_id)
 		
 	return interested_peer_ids
 	
@@ -125,8 +128,10 @@ func determine_relevant_entities(peer: Player) -> Array[SerializableEntity]:
 	var relevant_entities: Array[SerializableEntity] = []
 	for entity_type in all_entities.keys():
 		for entity: SerializableEntity in all_entities[entity_type]:
-			var distance = Utilities.get_distance(peer.current_cell, entity.current_cell)
-			if distance <= Constants.MAX_INTERESTED: relevant_entities.append(entity)
+			var current_distance = Utilities.get_distance(peer.current_cell, entity.current_cell)
+			var target_distance = Utilities.get_distance(peer.current_cell, entity.target_cell)
+			if (current_distance <= Constants.MAX_INTERESTED or target_distance <= Constants.MAX_INTERESTED): 
+				relevant_entities.append(entity)
 
 	return relevant_entities
 
@@ -136,7 +141,7 @@ func _on_entity_updated(entity: SerializableEntity):
 
 # Function called on every tick
 func _on_tick():
-	emit_signal("tick")
+	emit_signal("tick", self)
 
 @rpc
 func send_entity(serialized_entity):

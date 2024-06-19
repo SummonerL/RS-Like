@@ -11,6 +11,9 @@ var movement_path = []
 # Clean this up. We want to attach the MeshInstance3D
 var mesh: MeshInstance3D
 
+# keep a reference to our peer_id, which always comes in handy
+var peer_id
+
 func _ready():
 	__ = get_parent().__
 	var test = get_tree().get_root()
@@ -20,6 +23,10 @@ func _ready():
 			mesh = child
 	
 	GameManager.connect("tick", _on_tick)
+
+
+func set_peer_id(id):
+	peer_id = id
 
 func teleport_to_cell(target_cell: Vector2):
 	var absolute_position = get_parent().__.world_grid.map_to_local_center(target_cell)
@@ -86,7 +93,13 @@ func move_coroutine(target):
 
 # triggered every game 'tick'
 func _on_tick():
-	# Process the move request during the tick (eventually, this should be done on the "server" side		
+	# Process the move request during the tick (eventually, this should be done on the "server" side)
 	if (len(movement_path) > 0):
 		# move to next cell
-		move_to_cell(movement_path.pop_front())
+		var target_cell = movement_path.pop_front()
+		if (Utilities.get_distance(__.main_player.get_current_tile(), target_cell) > Constants.MAX_INTERESTED):
+			# the main player is no longer interested in me :(
+			__.entity_manager.remove_visible_player(peer_id)
+			return
+			
+		move_to_cell(target_cell)

@@ -131,13 +131,14 @@ enabled = false
 target_position = Vector3(0, -20, 0)
 debug_shape_thickness = 1
 
-[node name="Refs" type="Node" parent="." node_paths=PackedStringArray("world_grid", "camera", "click_flag", "game_server", "entity_manager")]
+[node name="Refs" type="Node" parent="." node_paths=PackedStringArray("world_grid", "camera", "click_flag", "game_server", "entity_manager", "main_player")]
 script = ExtResource("6_gwo08")
 world_grid = NodePath("../GameViewportContainer/GameViewport/WorldGrid")
 camera = NodePath("../GameViewportContainer/GameViewport/MalePlayer/Spatial/PlayerCamera")
 click_flag = NodePath("../ClickFlag")
 game_server = NodePath("../GameServer")
 entity_manager = NodePath("../EntityManager")
+main_player = NodePath("../GameViewportContainer/GameViewport/MalePlayer")
 
 [node name="GameServer" type="Node" parent="." node_paths=PackedStringArray("__")]
 script = ExtResource("11_7hvj2")
