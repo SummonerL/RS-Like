@@ -95,12 +95,18 @@ func move_coroutine(target):
 		var start_rotation = mesh.rotation
 		var direction = (target - start_position).normalized()
 		var target_rotation = Basis.looking_at(direction, Vector3.UP, true).get_euler()
+		
 		terrain_cast.enabled = true # determine terrain height
-		target.y = 0
+		var target_terrain_height = start_position.y
+		target.y = start_position.y
 
 		while elapsed_time < GameManager.TICK_INTERVAL:
 			elapsed_time += get_process_delta_time()
 			var t = elapsed_time / GameManager.TICK_INTERVAL
+
+			# set the terrain cast to the target cell
+			terrain_cast.global_position = target
+			terrain_cast.global_position.y += 5
 
 		   # Smoothly interpolate the rotation
 			var current_rotation = Vector3(
@@ -113,15 +119,20 @@ func move_coroutine(target):
 				
 			# determine the terrain height to place the player accordingly
 			if (terrain_cast.is_colliding()):
-				target.y = terrain_cast.get_collision_point().y
+				target_terrain_height = terrain_cast.get_collision_point().y
 			
-			# Smoothly lerp the character to the target cell
-			global_transform.origin = lerp(start_position, Vector3(target.x, target.y, target.z), t)
+			# Smoothly lerp the character to the target cell + height
+			var new_position = lerp(start_position, target, t)
+			new_position.y = lerp(start_position.y, target_terrain_height, t)
+
+			global_transform.origin = new_position
 			
 			await get_tree().create_timer(0.01).timeout
 		
-		global_transform.origin = target
-		terrain_cast.enabled = false
+		global_transform.origin = Vector3(target.x, target_terrain_height, target.z)
+		
+		if (movement_path.size() == 0):
+			terrain_cast.enabled = false
 		
 		# determine visibility of all instantiated entities
 		__.entity_manager.determine_and_set_visibility_all_entities()
