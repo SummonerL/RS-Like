@@ -69,6 +69,12 @@ func remove_instantiated_player(peer_id):
 func get_instantiated_players():
 	return instantiated_players
 
+# Given that all instantiated entities are invisible until certain conditions are met, this lets
+# us scan through and determine visibility for all instantiated entities
+func determine_and_set_visibility_all_entities() -> void:
+	for player_entity_node in instantiated_players:
+		player_entity_node.player_node.determine_and_set_visibility()
+
 class PlayerEntityNode:
 	var player_entity: Player
 	var player_node

@@ -118,19 +118,42 @@ func determine_interested_peers(serializable_entity: SerializableEntity) -> Arra
 		
 	return interested_peer_ids
 	
-func send_entity_to_interested_peers(serializable_entity) -> void:
+func send_entity_to_interested_peers(serializable_entity: SerializableEntity) -> void:
 	var interested_peer_ids = determine_interested_peers(serializable_entity)
 	for peer_id in interested_peer_ids:
+		if ((typeof(serializable_entity) == typeof(Player)) && ((serializable_entity as Player).peer_id == peer_id)):
+			send_entity_to_self(serializable_entity) # the player should receive an update about themself
+			continue
+			
 		rpc_id(peer_id, "send_entity", serializable_entity.to_dict()) 
+
+func send_entity_to_self(player_entity: Player):
+	# The peer is receiving information about themself
+	rpc_id(player_entity.peer_id, "send_entity", player_entity.to_dict()) 
+	
+	if (player_entity.state == Constants.PLAYER_STATE.MOVING):
+		# send the entities relevant to the player
+		for entity in determine_relevant_entities(player_entity):
+			if ((typeof(entity) == typeof(Player)) && ((entity as Player).peer_id == player_entity.peer_id)):
+				continue # we no longer need to see information about the self
+			rpc_id(player_entity.peer_id, "send_entity", entity.to_dict())
 
 # From the full list of entities, determine which entities are relevant to the player
 func determine_relevant_entities(peer: Player) -> Array[SerializableEntity]:
 	var relevant_entities: Array[SerializableEntity] = []
 	for entity_type in all_entities.keys():
 		for entity: SerializableEntity in all_entities[entity_type]:
-			var current_distance = Utilities.get_distance(peer.current_cell, entity.current_cell)
-			var target_distance = Utilities.get_distance(peer.current_cell, entity.target_cell)
-			if (current_distance <= Constants.MAX_INTERESTED or target_distance <= Constants.MAX_INTERESTED): 
+			
+			# Note: There could be an overlap in values here (i.e, the target cell is the same as the current cell), but the logic still applies
+			var peer_current_distance_to_entity = Utilities.get_distance(peer.current_cell, entity.current_cell) # player and the curernt position of target entity
+			var entity_towards_peer_distance = Utilities.get_distance(peer.current_cell, entity.target_cell) # entity is moving towards the player
+			var peer_towards_entity_distance = Utilities.get_distance(peer.target_cell, entity.current_cell) # player is moving towards the entity
+			
+			# TODO: We might want to change this logic a bit to analyze each cell in a movement path. This would account for instances where a player moves inside and outside
+			# of an entities range within one movement. We also need to think more about a scenario in which two players are moving towards each other at the same time.
+			if (peer_current_distance_to_entity <= Constants.MAX_INTERESTED or 
+				entity_towards_peer_distance <= Constants.MAX_INTERESTED or 
+				peer_towards_entity_distance <= Constants.MAX_INTERESTED): 
 				relevant_entities.append(entity)
 
 	return relevant_entities

@@ -122,6 +122,9 @@ func move_coroutine(target):
 		
 		global_transform.origin = target
 		terrain_cast.enabled = false
+		
+		# determine visibility of all instantiated entities
+		__.entity_manager.determine_and_set_visibility_all_entities()
 	
 func get_current_tile() -> Vector2:
 	var grid_cell_v3 = __.world_grid.local_to_map(Vector3(position.x, 0, position.z))

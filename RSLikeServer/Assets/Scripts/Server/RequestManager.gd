@@ -31,7 +31,8 @@ func _process_requests(_caller: GameServer):
 				player.target_cell = request.target_cell
 				player.movement_grid = Utilities.find_path(player.current_cell, request.target_cell)
 				player.set_state(Constants.PLAYER_STATE.MOVING)
-				__.game_server.connect("tick", player._move_by_tick)
+				if (!__.game_server.is_connected("tick", player._move_by_tick)):
+					__.game_server.connect("tick", player._move_by_tick)
 				emit_signal("entity_updated", player)
 			_:
 				pass

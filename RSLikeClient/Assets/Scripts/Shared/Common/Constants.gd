@@ -4,7 +4,7 @@ class_name Constants
 static var DEFAULT_COORDINATES = Vector2(0, 0)
 
 # The maximum distance of an entity from an 'interested' peer.
-static var MAX_INTERESTED = 5;
+static var MAX_INTERESTED = 10;
 
 enum PLAYER_STATE {IDLE, MOVING}
 enum ENTITY_TYPE {PLAYER}
