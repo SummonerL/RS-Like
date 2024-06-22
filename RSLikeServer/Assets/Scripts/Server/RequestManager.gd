@@ -27,6 +27,7 @@ func _process_requests(_caller: GameServer):
 		match request.request_type:
 			Constants.REQUEST_TYPE.MOVE:
 				var player = request.player
+				if (request.target_cell == player.current_cell): return # Toss the request
 				player.target_cell = request.target_cell
 				player.movement_grid = Utilities.find_path(player.current_cell, request.target_cell)
 				player.set_state(Constants.PLAYER_STATE.MOVING)

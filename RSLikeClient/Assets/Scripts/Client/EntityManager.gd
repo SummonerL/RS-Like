@@ -34,8 +34,9 @@ func process_player(my_id, player_entity: Player):
 	if (player_entity_node == null):
 		# This player will now be instantiated. 
 		# By default, the player is not 'visible' until the conditions are met to make them 
-		# visible (generally through movement)
+		# visible (generally through movement, or connecting to the server beside the active player)
 		player_entity_node = add_instantiated_player(player_entity)
+		player_entity_node.player_node.determine_and_set_visibility()
 		
 	# then, process the other player based on the state
 	match player_entity.state:
