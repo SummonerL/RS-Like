@@ -97,9 +97,26 @@ func _on_tick():
 	if (len(movement_path) > 0):
 		# move to next cell
 		var target_cell = movement_path.pop_front()
+		
+		# Because the player gets instantiated based on the 'final' position, we want to simply
+		# toggle visibility if they are inside / outside of the active player's interest zone.
+		# However, if the player ends its movement outside of the interest zone, we want to remove it entirely.
+		# The reason for doing this is because movement, by default, is one cell per tick. So, if a player starts
+		# several squares outside of the active player's interest zone, the server can still deem the active player 
+		# to be interested, if this player will end their movement inside the zone. If we deleted the node every time
+		# they entered a cell outside of the interest zone, we would run into a bug where, as they are potentially moving towards the
+		# zone, they get deleted anyway, because they haven't made it inside the zone yet. This logic offers us more flexibility.
 		if (Utilities.get_distance(__.main_player.get_current_tile(), target_cell) > Constants.MAX_INTERESTED):
-			# the main player is no longer interested in me :(
-			__.entity_manager.remove_visible_player(peer_id)
-			return
+			visible = false
 			
+			# the main player is no longer interested in me at all :(
+			if (movement_path.size() == 0): # the final cell in player's movement path
+				__.entity_manager.remove_instantiated_player(peer_id)
+				queue_free()
+				return
+		else:
+		# if the player is moving into the active's player's interest zone, we should make sure they
+		# are visible (the node is invisible by default)
+			if (!visible): visible = true
+
 		move_to_cell(target_cell)

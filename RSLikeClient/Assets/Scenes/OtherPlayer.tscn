@@ -4,6 +4,7 @@
 [ext_resource type="Script" path="res://Assets/Scripts/Client/OtherPlayerNode.gd" id="2_fmxp3"]
 
 [node name="OtherPlayer" type="Node3D" node_paths=PackedStringArray("terrain_cast")]
+visible = false
 script = ExtResource("2_fmxp3")
 terrain_cast = NodePath("Mesh/TerrainRayCast")
 

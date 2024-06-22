@@ -52,7 +52,7 @@ func sync_player_list(updated_connected_peer_ids):
 		if not updated_connected_peer_ids.has(id):
 			if (id == my_id): continue
 			connected_player_ids.remove_at(i)
-			__.entity_manager.remove_visible_player(id)
+			__.entity_manager.remove_instantiated_player(id)
 		i += 1
 	
 	print("Currently connected Players: " + str(connected_player_ids))
