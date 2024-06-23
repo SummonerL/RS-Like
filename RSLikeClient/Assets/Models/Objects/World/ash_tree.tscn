@@ -1,0 +1,25 @@
+[gd_scene load_steps=4 format=3 uid="uid://cv57mfgj6dn4"]
+
+[ext_resource type="PackedScene" uid="uid://jgvnt8iv568t" path="res://Assets/Models/Objects/World/ash_tree.glb" id="1_7yie3"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sqjl0"]
+albedo_color = Color(0.309804, 0.207843, 0.137255, 1)
+metallic_specular = 0.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cxi07"]
+albedo_color = Color(0.4, 0.431373, 0.243137, 1)
+metallic_specular = 0.0
+
+[node name="ash_tree" instance=ExtResource("1_7yie3")]
+
+[node name="TreeBase" parent="." index="0"]
+surface_material_override/0 = SubResource("StandardMaterial3D_sqjl0")
+
+[node name="Leaves" parent="." index="1"]
+surface_material_override/0 = SubResource("StandardMaterial3D_cxi07")
+
+[node name="Leaves_001" parent="." index="2"]
+surface_material_override/0 = SubResource("StandardMaterial3D_cxi07")
+
+[node name="Leaves_002" parent="." index="3"]
+surface_material_override/0 = SubResource("StandardMaterial3D_cxi07")
