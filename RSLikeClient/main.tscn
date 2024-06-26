@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://kovhsisnb8w3"]
+[gd_scene load_steps=17 format=3 uid="uid://kovhsisnb8w3"]
 
 [ext_resource type="Texture2D" uid="uid://bkh5qmdmo8nh" path="res://Assets/Textures/tree_bark.png" id="1_0w48q"]
 [ext_resource type="MeshLibrary" uid="uid://bvexiqcy8f8gi" path="res://Assets/Models/MeshLibraries/MainLibrary/main_mesh_library.tres" id="1_4wcq0"]
@@ -13,7 +13,6 @@
 [ext_resource type="Script" path="res://Assets/Scripts/Client/ClientEntitiesParentNode.gd" id="8_3j7w1"]
 [ext_resource type="Script" path="res://Assets/Scripts/Server/GameServer.gd" id="11_7hvj2"]
 [ext_resource type="Script" path="res://Assets/Scripts/Client/EntityManager.gd" id="13_f4ia7"]
-[ext_resource type="PackedScene" uid="uid://cv57mfgj6dn4" path="res://Assets/Models/Objects/World/ash_tree.tscn" id="14_o1hhk"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ybwbj"]
 sky_top_color = Color(0, 0, 0, 1)
@@ -149,6 +148,3 @@ __ = NodePath("../Refs")
 script = ExtResource("13_f4ia7")
 __ = NodePath("../Refs")
 client_entities = NodePath("../GameViewportContainer/GameViewport/ClientEntities")
-
-[node name="ash_tree" parent="." instance=ExtResource("14_o1hhk")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27.7383, 2.32822, -28.3475)

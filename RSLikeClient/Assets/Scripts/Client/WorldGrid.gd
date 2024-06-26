@@ -23,6 +23,7 @@ func _ready():
 
 	# debugging 
 	# show_grid()
+	# save_to_file()
 	
 # used for debugging
 func show_grid():
@@ -33,6 +34,30 @@ func show_grid():
 	# all occupied cells on the grid (factoring in mesh size)
 	for cell in used_grid_cells:
 		draw_cell_box(cell, wireframe_material)
+
+# this is a 'tool' for saving the map data to an external file
+func save_to_file():
+	await get_tree().create_timer(.01).timeout
+	var map_data = {}
+	grid_terrain_ray.enabled = true
+	for cell: Vector2 in used_grid_cells_2d:
+		# get the height at the center of this cell
+		var cell_position: Vector3 = map_to_local(Vector3(cell.x, 0, cell.y)) + cell_size * 0.5  # center position
+		var height = 0
+
+		grid_terrain_ray.position = Vector3(cell_position.x, 10, cell_position.z)
+		grid_terrain_ray.force_raycast_update()
+		if (grid_terrain_ray.is_colliding()):
+			height = grid_terrain_ray.get_collision_point().y
+		
+		map_data[str(cell)] = { height = snappedf(height, 0.0001) }
+		
+	grid_terrain_ray.enabled = false
+	
+	var file_data = JSON.stringify(map_data)
+	var file = FileAccess.open("user://map.json", FileAccess.WRITE)
+	file.store_line(file_data)
+	
 
 # determined the grid map cells that a given mesh (origin point) occupies
 func determine_mesh_cells(mesh_origin_cell):
