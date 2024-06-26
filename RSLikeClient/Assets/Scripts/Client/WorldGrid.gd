@@ -52,6 +52,10 @@ func save_to_file():
 		
 		map_data[str(cell)] = { height = snappedf(height, 0.0001) }
 		
+		# Introduce randomness to simulate natural tree clustering
+		if ((height < 4 and height > 1) and (randf() < 0.025)):
+			map_data[str(cell)]["entity"] = "ASH_TREE"
+		
 	grid_terrain_ray.enabled = false
 	
 	var file_data = JSON.stringify(map_data)
