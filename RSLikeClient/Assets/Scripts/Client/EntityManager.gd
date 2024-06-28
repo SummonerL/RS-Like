@@ -17,7 +17,7 @@ var instantiated_entities: Dictionary = {}
 signal process_self(Player)
 
 # Scenes for initializing various entities
-var other_player_scene = load("res://Assets/Scenes/OtherPlayer.tscn")
+var other_player_scene = load("res://Assets/Scenes/Entities/OtherPlayer.tscn")
 var ash_tree_scene = load("res://Assets/Scenes/Entities/World/AshTree.tscn")
 
 # Note: For each of these 'process_' functions, we are essentially analyzing the
@@ -46,7 +46,7 @@ func process_player(my_id, player_entity: Player):
 	# then, process the other player based on the state
 	match player_entity.state:
 		Constants.PLAYER_STATE.MOVING:
-			player_entity_node.player_node.process_movement(player_entity.target_cell)
+			player_entity_node.player_node.process_movement(player_entity.target_cell, player_entity.movement_grid)
 
 func process_non_player_entity(entity):
 	# first, determine if the player is already aware of the entity
@@ -62,6 +62,7 @@ func process_non_player_entity(entity):
 	instantiated_entities[entity.current_cell] = instantiated_entity # track this entity in the entity manager
 	client_entities.add_child(instantiated_entity) # add node to scene tree
 	instantiated_entity.teleport_to_cell(entity.current_cell, entity.height) # position the entity in the game world
+	instantiated_entity.determine_and_set_visibility()
 
 func add_instantiated_player(player_entity: Player) -> PlayerEntityNode:
 		var player_node_instance = other_player_scene.instantiate()

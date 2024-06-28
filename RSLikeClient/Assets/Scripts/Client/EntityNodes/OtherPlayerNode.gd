@@ -43,12 +43,9 @@ func snap_to_terrain():
 
 		terrain_cast.enabled = false
 
-func process_movement(target_cell: Vector2):
-	
+func process_movement(target_cell: Vector2, movement_path):
 	var source_cell = __.world_grid.local_to_map(Vector3(position.x, 0, position.z))
-	
-	# TODO: The server should ideally determine the movement path.
-	movement_path = __.world_grid.find_path(Vector2(source_cell.x, source_cell.z), target_cell)
+	self.movement_path = movement_path
 	
 func move_to_cell(grid_cell):
 	var target = __.world_grid.map_to_local_center(grid_cell)

@@ -29,7 +29,8 @@ func _process_requests(_caller: GameServer):
 				var player = request.player
 				if (request.target_cell == player.current_cell): return # Toss the request
 				player.target_cell = request.target_cell
-				player.movement_grid = Utilities.find_path(player.current_cell, request.target_cell)
+				player.movement_grid = Utilities.find_path(player.current_cell, request.target_cell, __.map_data.map_data)
+				if (player.movement_grid.size() == 0): return
 				player.set_state(Constants.PLAYER_STATE.MOVING)
 				if (!__.game_server.is_connected("tick", player._move_by_tick)):
 					__.game_server.connect("tick", player._move_by_tick)

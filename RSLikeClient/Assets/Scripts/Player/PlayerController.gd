@@ -61,12 +61,9 @@ func generic_action_request(target_position):
 		# submit the request to the server
 		__.game_server.send_player_request(Constants.REQUEST_TYPE.MOVE, Vector2(target_grid_map_coordinate.x, target_grid_map_coordinate.z))
 	
-func process_movement(target_cell: Vector2):
-	
+func process_movement(target_cell: Vector2, movement_path):
 	var source_cell = __.world_grid.local_to_map(Vector3(position.x, 0, position.z))
-	
-	# TODO: The server should ideally determine the movement path.
-	movement_path = __.world_grid.find_path(Vector2(source_cell.x, source_cell.z), target_cell)
+	self.movement_path = movement_path
 	
 func move_to_cell(grid_cell):
 	var target = __.world_grid.map_to_local_center(grid_cell)
@@ -151,4 +148,4 @@ func _on_tick():
 func _on_self_entity_updated(my_entity: Player):
 	match my_entity.state:
 		Constants.PLAYER_STATE.MOVING:
-			process_movement(my_entity.target_cell)
+			process_movement(my_entity.target_cell, my_entity.movement_grid)

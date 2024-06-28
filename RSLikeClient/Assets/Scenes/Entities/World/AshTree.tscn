@@ -147,6 +147,7 @@ blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_vmrpo")
 
 [node name="ash_tree" type="Node3D"]
+visible = false
 script = ExtResource("1_oa84c")
 
 [node name="TreeBase" type="MeshInstance3D" parent="."]

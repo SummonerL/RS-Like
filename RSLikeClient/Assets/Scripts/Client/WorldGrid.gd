@@ -23,7 +23,7 @@ func _ready():
 
 	# debugging 
 	# show_grid()
-	save_to_file()
+	# save_to_file()
 	
 # used for debugging
 func show_grid():
@@ -150,89 +150,3 @@ func get_distance(current_cell, target_cell):
 	
 	# chebyshev distance
 	return max(abs(current_2d.x - target_2d.x), abs(current_2d.y - target_2d.y))
-	
-# finds the shortest path, using A*.
-# Cnsiders occupied cells and diagonal movement
-func find_path(start_cell, end_cell):
-	var open_list = []
-	var closed_list = []
-	var start_node: GridNode = null
-	var end_node: GridNode = null
-	
-	start_node = GridNode.new(start_cell)
-	end_node = GridNode.new(end_cell)
-	
-	# the open list begins with the starting node
-	open_list.append(start_node)
-	
-	while len(open_list) > 0:
-		var current_node = open_list[0]
-		
-		# Finds the lowest cost node in the open list
-		for index in range(len(open_list)):
-			if (open_list[index].f < current_node.f):
-				current_node = open_list[index]
-			
-		# We've evaluated the current node. Move it to the closed list
-		open_list.erase(current_node)
-		closed_list.append(current_node)
-		
-		# Determine and return the path by following node parent tree 
-		if (current_node.pos == end_node.pos):
-			var path = []
-			var current = current_node
-			while current != null:
-				path.append(current.pos)
-				current = current.parent
-			path.reverse()
-			path.pop_front() # We don't need the origin node
-			return path
-		
-		# Determine Evaluate children (orthogonal and diagonal cells)
-		var children = []
-		for new_position in [Vector2(-1, 0), Vector2(1, 0), Vector2(0, -1), Vector2(0, 1), Vector2(-1, -1), Vector2(1, 1), Vector2(-1, 1), Vector2(1, -1)]:
-			var node_position = current_node.pos + new_position
-			if (!used_grid_cells_2d.has(node_position)): # Ensure the cell is valid
-				continue
-				
-			# Here we can essentially "filter" the children based on the cell validity
-			# This is where we can check for things like diagonal corner clipping or unwalkable
-			# Cells.
-				
-			var new_node = GridNode.new(node_position)
-			new_node.parent = current_node
-			children.append(new_node)
-			
-		for child in children:
-			var skip_child = false
-			for closed_child in closed_list:
-				if child.pos == closed_child.pos:
-					skip_child = true # We have already evaluated this node
-					break
-					
-			if (skip_child):
-				continue
-			
-			child.g = current_node.g + 1
-			child.h = (child.pos - end_node.pos).length()
-			child.f = child.g + child.h
-			
-			for open_node in open_list:
-				if (child.pos == open_node.pos and child.g > open_node.g):
-					skip_child = true
-					break
-					
-			if not (skip_child):
-				open_list.append(child)
-	return []
-
-# Used for A* pathfinding
-class GridNode:
-	var pos
-	var g = 0 # Cost from the start node
-	var h = 0 # Estimated cost to goal 
-	var f = 0 # Total node cost
-	var parent = null
-
-	func _init(node_pos):
-		self.pos = node_pos

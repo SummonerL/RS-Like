@@ -3,19 +3,19 @@ class_name MapData extends Node
 # Reference to the Refs object
 @export var __: Refs
 
-var map_data: MapDataInfo
+var map_data: Utilities.MapDataInfo
 
 func _ready():
 	# load map data into memory and initialize the game map
 	var map_data_string = FileAccess.open("res://Assets/Data/map_data.json", FileAccess.READ)
 	var map_data_dict: Dictionary = JSON.parse_string(map_data_string.get_as_text())
 	
-	map_data = MapDataInfo.new()
+	map_data = Utilities.MapDataInfo.new()
 
 	for cell_str in map_data_dict.keys():
 		var cell = Utilities.string_to_vector2(cell_str)
 		var cell_info = map_data_dict[cell_str]
-		var map_data_cell = MapDataCell.new(cell, cell_info.height)
+		var map_data_cell = Utilities.MapDataCell.new(cell, cell_info.height)
 		
 		# populate entity, if any
 		if (cell_info.has("entity")):
@@ -34,16 +34,3 @@ func create_entity(position: Vector2, type: Constants.ENTITY_TYPE, height: float
 			__.game_server.all_entities[Constants.ENTITY_TYPE.ASH_TREE].append(new_entity)
 	
 	return new_entity
-
-class MapDataInfo:
-	var cells: Dictionary
-		
-class MapDataCell:
-	var position: Vector2
-	var height: float
-	var entity = SerializableEntity
-	
-	func _init(position: Vector2, height: float):
-		self.position = position
-		self.height = height
-	

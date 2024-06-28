@@ -18,7 +18,7 @@ static func get_rand_cell(top_left: Vector2, bottom_right: Vector2):
 
 # finds the shortest path, using A*.
 # Cnsiders occupied cells and diagonal movement
-static func find_path(start_cell, end_cell):
+static func find_path(start_cell, end_cell, map_data: MapDataInfo):
 	var open_list = []
 	var closed_list = []
 	var start_node: GridNode = null
@@ -26,6 +26,14 @@ static func find_path(start_cell, end_cell):
 	
 	start_node = GridNode.new(start_cell)
 	end_node = GridNode.new(end_cell)
+	
+	# Make sure that the target cell is actually reachable
+	var map_data_cell_target
+	if (map_data.cells.has(str(end_cell))):
+		map_data_cell_target = map_data.cells[str(end_cell)]
+	else: return
+	if (map_data_cell_target.entity != null): # Ensure the cell is not blockable
+		return []
 	
 	# the open list begins with the starting node
 	open_list.append(start_node)
@@ -57,7 +65,16 @@ static func find_path(start_cell, end_cell):
 		var children = []
 		for new_position in [Vector2(-1, 0), Vector2(1, 0), Vector2(0, -1), Vector2(0, 1), Vector2(-1, -1), Vector2(1, 1), Vector2(-1, 1), Vector2(1, -1)]:
 			var node_position = current_node.pos + new_position
-			# TODO: Ensure the cell is valid
+			
+			var map_data_cell
+			if (map_data.cells.has(str(node_position))):
+				map_data_cell = map_data.cells[str(node_position)]
+			
+			if (map_data_cell == null): # Ensure the cell is valid
+				continue
+				
+			if (map_data_cell.entity != null): # Ensure the cell is not blockable
+				continue
 				
 			# Here we can essentially "filter" the children based on the cell validity
 			# This is where we can check for things like diagonal corner clipping or unwalkable
@@ -112,3 +129,15 @@ class GridNode:
 
 	func _init(node_pos):
 		self.pos = node_pos
+		
+class MapDataInfo:
+	var cells: Dictionary
+		
+class MapDataCell:
+	var position: Vector2
+	var height: float
+	var entity: SerializableEntity
+	
+	func _init(position: Vector2, height: float):
+		self.position = position
+		self.height = height
