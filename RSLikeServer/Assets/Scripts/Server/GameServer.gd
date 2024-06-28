@@ -12,8 +12,13 @@ const PORT = 9009
 const MAX_CLIENTS = 4
 
 # All instantiated entities
+# TODO: This approach is going to need to change. It doesn't make a lot of sense to have to iterate
+# through all of the entities to find the relevant / nearby one's. Now that we are pulling in the map data
+# and populating entities on the map, consider just searching the relevant map coordinates and checking for 
+# entities.
 var all_entities = {
-	Constants.ENTITY_TYPE.PLAYER: [] # connected players
+	Constants.ENTITY_TYPE.PLAYER: [], # connected players
+	Constants.ENTITY_TYPE.ASH_TREE: []
 }
 
 # Define the tick interval in seconds (600ms = 0.6 seconds)
@@ -121,7 +126,7 @@ func determine_interested_peers(serializable_entity: SerializableEntity) -> Arra
 func send_entity_to_interested_peers(serializable_entity: SerializableEntity) -> void:
 	var interested_peer_ids = determine_interested_peers(serializable_entity)
 	for peer_id in interested_peer_ids:
-		if ((typeof(serializable_entity) == typeof(Player)) && ((serializable_entity as Player).peer_id == peer_id)):
+		if ((serializable_entity is Player) && ((serializable_entity as Player).peer_id == peer_id)):
 			send_entity_to_self(serializable_entity) # the player should receive an update about themself
 			continue
 			
@@ -134,7 +139,7 @@ func send_entity_to_self(player_entity: Player):
 	if (player_entity.state == Constants.PLAYER_STATE.MOVING):
 		# send the entities relevant to the player
 		for entity in determine_relevant_entities(player_entity):
-			if ((typeof(entity) == typeof(Player)) && ((entity as Player).peer_id == player_entity.peer_id)):
+			if ((entity is Player) && ((entity as Player).peer_id == player_entity.peer_id)):
 				continue # we no longer need to see information about the self
 			rpc_id(player_entity.peer_id, "send_entity", entity.to_dict())
 

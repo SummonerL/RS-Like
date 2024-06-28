@@ -6,14 +6,19 @@ extends Node
 # List of instantiated players
 var instantiated_players: Array[PlayerEntityNode] = []
 
+# List of non-player instantiated entities
+# Cell -> Entity
+var instantiated_entities: Dictionary = {} 
+
 # Parent to all entities created on the client
 @export var client_entities: Node
 
 # Singal for indicating that the current player entity was updated by the server, thus requiring client changes
 signal process_self(Player)
 
-# Scene for initializing the player
+# Scenes for initializing various entities
 var other_player_scene = load("res://Assets/Scenes/OtherPlayer.tscn")
+var ash_tree_scene = load("res://Assets/Scenes/Entities/World/AshTree.tscn")
 
 # Note: For each of these 'process_' functions, we are essentially analyzing the
 # entities that the server sent to this client, to determine what to do with this information.
@@ -42,6 +47,21 @@ func process_player(my_id, player_entity: Player):
 	match player_entity.state:
 		Constants.PLAYER_STATE.MOVING:
 			player_entity_node.player_node.process_movement(player_entity.target_cell)
+
+func process_non_player_entity(entity):
+	# first, determine if the player is already aware of the entity
+	if (instantiated_entities.has(entity.current_cell)):
+		return
+	
+	var instantiated_entity
+	
+	# otherwise, add and process the entity
+	if entity is AshTree:
+		instantiated_entity = ash_tree_scene.instantiate()
+	
+	instantiated_entities[entity.current_cell] = instantiated_entity # track this entity in the entity manager
+	client_entities.add_child(instantiated_entity) # add node to scene tree
+	instantiated_entity.teleport_to_cell(entity.current_cell, entity.height) # position the entity in the game world
 
 func add_instantiated_player(player_entity: Player) -> PlayerEntityNode:
 		var player_node_instance = other_player_scene.instantiate()

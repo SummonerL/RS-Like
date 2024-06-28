@@ -29,6 +29,8 @@ func send_entity(serialized_entity):
 	# Determine entity type
 	if entity is Player:
 		__.entity_manager.process_player(my_id, entity as Player)
+	else:
+		__.entity_manager.process_non_player_entity(entity)
 
 @rpc
 # invoked on the client every game tick

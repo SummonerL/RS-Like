@@ -90,6 +90,18 @@ static func find_path(start_cell, end_cell):
 				open_list.append(child)
 	return []
 
+# useful function for converting strings to Vector2 (used primarily when pulling map data from file
+static func string_to_vector2(string := "") -> Vector2:
+	if string:
+		var new_string: String = string
+		new_string = new_string.erase(0, 1)
+		new_string = new_string.erase(new_string.length() - 1, 1)
+		var array: Array = new_string.split(", ")
+
+		return Vector2(int(array[0]), int(array[1]))
+
+	return Vector2.ZERO
+
 # Used for A* pathfinding
 class GridNode:
 	var pos

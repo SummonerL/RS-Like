@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Map Visualizer</title>
+    <style>
+        canvas {
+            border: 1px solid black;
+        }
+        #coordinates {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: white;
+            padding: 5px;
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <div id="coordinates">Hover over a tile to see the coordinates</div>
+    <input type="file" id="fileInput">
+    <canvas id="mapCanvas" width="600" height="600"></canvas>
+
+    <script src="app.js"></script>
+</body>
+</html>

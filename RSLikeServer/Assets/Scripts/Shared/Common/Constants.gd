@@ -7,7 +7,11 @@ static var DEFAULT_COORDINATES = Vector2(0, 0)
 static var MAX_INTERESTED = 10;
 
 enum PLAYER_STATE {IDLE, MOVING}
-enum ENTITY_TYPE {PLAYER}
+enum TREE_STATE {UNCUT, CUT}
+enum ENTITY_TYPE {
+	PLAYER,
+	ASH_TREE # Consider grouping similar entity types
+}
 
 # Enumeration for different types of player requests
 enum REQUEST_TYPE {

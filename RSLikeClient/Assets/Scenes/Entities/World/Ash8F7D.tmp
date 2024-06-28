@@ -1,4 +1,6 @@
-[gd_scene load_steps=15 format=3 uid="uid://cv57mfgj6dn4"]
+[gd_scene load_steps=16 format=3 uid="uid://cv57mfgj6dn4"]
+
+[ext_resource type="Script" path="res://Assets/Scripts/Client/EntityNodes/World/AshTreeNode.gd" id="1_oa84c"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_75eqd"]
 
@@ -145,6 +147,7 @@ blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_vmrpo")
 
 [node name="ash_tree" type="Node3D"]
+script = ExtResource("1_oa84c")
 
 [node name="TreeBase" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 3.38, 0, 0, 0, 1, 0, 3.4, 0)

@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://bxsadq5pme1b3"]
+[gd_scene load_steps=5 format=3 uid="uid://bxsadq5pme1b3"]
 
 [ext_resource type="Script" path="res://Assets/Scripts/Server/GameServer.gd" id="1_ve3ib"]
 [ext_resource type="Script" path="res://Assets/Scripts/Server/RequestManager.gd" id="2_stpiy"]
 [ext_resource type="Script" path="res://Assets/Scripts/Common/Refs.gd" id="3_n11lj"]
+[ext_resource type="Script" path="res://MapData.gd" id="4_khgal"]
 
 [node name="Main" type="Node2D"]
 visible = false
@@ -19,3 +20,7 @@ __ = NodePath("../Refs")
 script = ExtResource("3_n11lj")
 game_server = NodePath("../GameServer")
 request_manager = NodePath("../RequestManager")
+
+[node name="MapData" type="Node" parent="." node_paths=PackedStringArray("__")]
+script = ExtResource("4_khgal")
+__ = NodePath("../Refs")

@@ -23,7 +23,7 @@ func _ready():
 
 	# debugging 
 	# show_grid()
-	# save_to_file()
+	save_to_file()
 	
 # used for debugging
 func show_grid():

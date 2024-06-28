@@ -16,7 +16,6 @@ var peer_id
 
 func _ready():
 	__ = get_parent().__
-	var test = get_tree().get_root()
 	
 	for child in get_child(0).get_children():
 		if child is MeshInstance3D:
